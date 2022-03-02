@@ -69,7 +69,8 @@ class Messages:
             (f"```{prefix}nowplaying```", "Shows information about the currently playing song"),
             (f"```{prefix}play <URL | Query>```", "Plays a song from **URL** or plays the first song from YouTube based on **Query**"),
             (f"```{prefix}queue```", "Shows the song queue"),
-            (f"```{prefix}skip```", "Skips the currently playing song")
+            (f"```{prefix}skip```", "Skips the currently playing song"),
+            (f"```{prefix}gif <Query>```", "Posts a random GIF from Tenor based on **Query**")
         ]
 
         return commands
