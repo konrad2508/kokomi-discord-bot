@@ -45,12 +45,18 @@ class Messages:
 
     @staticmethod
     def SONG_QUEUE(currently_playing: IPCMSource, queue: list[IPCMSource], is_looped: bool) -> str:
+        QUEUE_SONG_LIMIT = 4
+
+        sent_queue = queue[:QUEUE_SONG_LIMIT]
+        rest_queue = queue[QUEUE_SONG_LIMIT:]
+        
         nl = '\n'
         looped_str = f' (looped)' if is_looped else ''
-        queue_str = f"{nl}{nl.join([ f'{i}. [{song.title}]({song.url})' for i, song in enumerate(queue, 2) ])}" if len(queue) > 0 else ''
+        queue_str = f"{nl}{nl.join([ f'{i}. [{song.title}]({song.url})' for i, song in enumerate(sent_queue, 2) ])}" if len(sent_queue) > 0 else ''
+        rest_str = f"{nl}And {len(rest_queue)} other song{'s' if len(rest_queue) > 1 else ''}" if len(rest_queue) > 0 else ''
         msg = f'''\
             Queue:
-            1. [{currently_playing.title}]({currently_playing.url}) (currently playing){looped_str}{queue_str}
+            1. [{currently_playing.title}]({currently_playing.url}) (currently playing){looped_str}{queue_str}{rest_str}
             '''
         
         return msg
