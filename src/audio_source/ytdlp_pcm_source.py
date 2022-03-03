@@ -60,12 +60,3 @@ class YtdlpPCMSource(IPCMSource):
         filename = data['url']
 
         return cls(FFmpegPCMAudio(filename, **cls._FFMPEG_OPTIONS), data, filename)
-
-    async def get_new_instance(self) -> YtdlpPCMSource:
-        logging.info(f'getting new instance of {self._filename}')
-
-        new_instance = YtdlpPCMSource(FFmpegPCMAudio(self._filename, **self._FFMPEG_OPTIONS), self._data, self._filename)
-
-        self.cleanup()
-
-        return new_instance

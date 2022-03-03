@@ -53,7 +53,7 @@ class MusicPlayerService:
         '''Connects the bot to a voice channel.'''
 
         conn = await channel.connect()
-        self.voice_channels[id] = VC(conn, False, [], None, False)
+        self.voice_channels[id] = VC(conn, False, [], None, None, False)
 
     async def disconnect(self, id: int) -> None:
         '''Disconnects the bot from a voice channel.'''
@@ -148,7 +148,7 @@ class MusicPlayerService:
                 logging.error('server.currently_playing is None')
 
         if server.is_looped:
-            song = server.currently_playing
+            song = server.currently_playing_song
 
             if song is None:
                 logging.error('_play_from_queue: server.is_looped = True and song is None')
@@ -156,11 +156,11 @@ class MusicPlayerService:
 
                 raise Exception
 
-            new_instance = await song.get_new_instance()
-            server.currently_playing = new_instance
+            song_instance = await song.get_instance()
+            server.currently_playing = song_instance
 
             server.connection.play(
-                new_instance,
+                song_instance,
                 after=lambda e: asyncio.run_coroutine_threadsafe(
                     self._play_from_queue(id, on_play, on_end, loop, e),
                     loop
@@ -169,13 +169,15 @@ class MusicPlayerService:
 
         elif not server.is_queue_empty():
             song = server.queue.pop(0)
+            song_instance = await song.get_instance()
 
-            server.currently_playing = song
+            server.currently_playing_song = song
+            server.currently_playing = song_instance
 
             await on_play(song.title, song.url)
 
             server.connection.play(
-                song,
+                song_instance,
                 after=lambda e: asyncio.run_coroutine_threadsafe(
                     self._play_from_queue(id, on_play, on_end, loop, e),
                     loop
@@ -183,6 +185,7 @@ class MusicPlayerService:
             )
 
         else:
+            server.currently_playing_song = None
             server.currently_playing = None
             await on_end()
 
