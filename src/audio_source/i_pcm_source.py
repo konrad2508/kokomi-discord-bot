@@ -20,7 +20,3 @@ class IPCMSource(ABC, CountablePCMVolumeTransformer):
     @abstractmethod
     async def from_search(cls: Type[IPCMSource], search: str) -> IPCMSource:
         '''Returns an instance representing a song identified by the search argument, being either a url or a query.'''
-
-    @abstractmethod
-    async def get_new_instance(self) -> IPCMSource:
-        '''Returns a new instance representing the same song. Used to play the same song again.'''
