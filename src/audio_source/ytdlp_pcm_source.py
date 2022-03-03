@@ -35,7 +35,7 @@ class YtdlpPCMSource(IPCMSource):
 
         self.title: str = data.get('title', '')
         self.url: str = data.get('original_url', '')
-        self.duration: int = data.get('duration', 0)
+        self.duration: int = int(data.get('duration', 0))
 
         self._filename = filename
         self._data = data
