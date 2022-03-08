@@ -14,7 +14,7 @@ from service.gif_service import GifService, gif_service
 
 
 class GifCog(commands.Cog):
-    '''Class representing the skip command. This command skips the currently playing song.'''
+    '''Class representing the gif command. This command returns a GIF based on the user's input.'''
 
     def __init__(
             self,
