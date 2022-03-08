@@ -81,7 +81,8 @@ class Messages:
             (f"```{prefix}play <URL | Query>```", "Plays a song from **URL** or plays the first song from YouTube based on **Query**"),
             (f"```{prefix}queue```", "Shows the song queue"),
             (f"```{prefix}skip```", "Skips the currently playing song"),
-            (f"```{prefix}gif <Query>```", "Posts a random GIF from Tenor based on **Query**")
+            (f"```{prefix}gif <Query>```", "Posts a random GIF from Tenor based on **Query**"),
+            (f"```{prefix}7tv <Query>```", "Posts an emote from 7TV based on **Query**")
         ]
 
         return commands
