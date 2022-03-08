@@ -12,12 +12,13 @@ class Config:
         self.token = os.environ.get('BOT_TOKEN', '')
         self.prefix = os.environ.get('BOT_PREFIX', '')
         
+        self.tenor_base_url = os.environ.get('TENOR_BASE_URL', '')
         self.tenor_token = os.environ.get('TENOR_TOKEN', '')
         self.tenor_limit = os.environ.get('TENOR_LIMIT', '')
 
-        self.seventv_base_url = os.environ.get('7TV_BASE_URL', '')
-        self.seventv_emote_url = os.environ.get('7TV_EMOTE_URL', '')
-        self.seventv_limit = os.environ.get('7TV_LIMIT', '')
+        self.seventv_base_url = os.environ.get('SEVENTV_BASE_URL', '')
+        self.seventv_emote_url = os.environ.get('SEVENTV_EMOTE_URL', '')
+        self.seventv_limit = os.environ.get('SEVENTV_LIMIT', '')
 
 
 conf = Config()

@@ -13,8 +13,6 @@ from model.reaction.gif import Gif
 class GifService:
     '''Class responsible for fetching GIFs.'''
 
-    _BASE_URL = 'https://g.tenor.com/v1'
-
     def __init__(self, config: Config) -> None:
         self.config = config
 
@@ -24,7 +22,7 @@ class GifService:
         logging.info(f'getting a gif for "{query}"')
 
         r = requests.get(
-            f'{self._BASE_URL}/search?q={query}&key={self.config.tenor_token}&limit={self.config.tenor_limit}'
+            f'{self.config.tenor_base_url}/search?q={query}&key={self.config.tenor_token}&limit={self.config.tenor_limit}'
         )
 
         if r.status_code != 200:
