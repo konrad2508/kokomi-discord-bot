@@ -22,6 +22,7 @@ class Messages:
     EMPTY_QUEUE = 'The queue is empty'
     SKIPPED_SONG = 'Skipped currently playing song'
     ERROR_FETCHING_GIFS = 'There was an error fetching GIFs'
+    ERROR_FETCHING_EMOTES = 'There was an error fetching an emote'
 
     @staticmethod
     def CURRENTLY_PLAYING(currently_playing: CurrentlyPlaying) -> str:
@@ -64,7 +65,11 @@ class Messages:
     @staticmethod
     def NO_GIFS_FOUND(query: str) -> str:
         return f'Could not find a GIF for "{query}"'
-    
+
+    @staticmethod
+    def NO_EMOTES_FOUND(query: str) -> str:
+        return f'Could not find an emote for "{query}"'
+
     @staticmethod
     def HELP(prefix: str) -> list[tuple[str, str]]:
         commands = [

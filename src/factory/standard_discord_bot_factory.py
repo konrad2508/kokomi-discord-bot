@@ -20,7 +20,8 @@ class StandardDiscordBotFactory(IDiscordBotFactory):
             'cog.music.skip',
             'cog.music.queue',
             'cog.music.loop',
-            'cog.reaction.gif'
+            'cog.reaction.gif',
+            'cog.reaction.7tv'
         ]
 
         return extensions
