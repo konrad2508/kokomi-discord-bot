@@ -15,5 +15,9 @@ class Config:
         self.tenor_token = os.environ.get('TENOR_TOKEN', '')
         self.tenor_limit = os.environ.get('TENOR_LIMIT', '')
 
+        self.seventv_base_url = os.environ.get('7TV_BASE_URL', '')
+        self.seventv_emote_url = os.environ.get('7TV_EMOTE_URL', '')
+        self.seventv_limit = os.environ.get('7TV_LIMIT', '')
+
 
 conf = Config()

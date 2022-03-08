@@ -3,6 +3,7 @@ from nextcord.ext import commands
 
 from colours import Colours
 from embed_titles import EmbedTitles
+from model.reaction.emote import Emote
 from model.reaction.gif import Gif
 
 
@@ -41,6 +42,14 @@ class EmbedSenderService:
         embed = (nextcord.Embed(colour=nextcord.Colour.from_rgb(*Colours.SUCCESS), title=gif.query, url=gif.gif_page)
                 .set_footer(text='Via Tenor')
                 .set_image(url=gif.url))
+
+        await ctx.send(content=None, embed=embed)
+
+    async def send_emote(self, ctx: commands.Context, emote: Emote) -> None:
+        '''Sends an embed representing an emote.'''
+
+        embed = (nextcord.Embed(colour=nextcord.Colour.from_rgb(*Colours.SUCCESS), title=emote.name)
+                .set_image(url=emote.url))
 
         await ctx.send(content=None, embed=embed)
 
