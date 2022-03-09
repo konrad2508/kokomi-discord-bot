@@ -19,6 +19,8 @@ class SeventvProviderService(IEmoteProviderService):
     async def get_emote(self, query: str) -> Emote:
         '''Gets an emote based on query from 7TV.'''
 
+        logging.info(f'getting a 7tv emote for "{query}"')
+
         query_json = {
             'query': '''
                 query(
@@ -76,13 +78,16 @@ class SeventvProviderService(IEmoteProviderService):
                 emote_name = emote['name']
                 emote_mime = emote['mime']
 
+                logging.info('found a 7tv emote')
+
                 cdn_url = f'{self.config.seventv_emote_url}/{emote_id}/4x'
 
                 async with sess.get(cdn_url) as r:
                     emote_content = await r.content.read()
 
                 emote_filename = await self.emote_downloader.download(emote_mime, emote_content)
-                
+                logging.info(f'downloaded {emote_name}')
+
                 return Emote(emote_name, emote_filename)
 
             except IndexError:
