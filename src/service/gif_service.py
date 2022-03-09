@@ -1,8 +1,6 @@
-import json
 import logging
 import random
-
-import requests
+import aiohttp
 
 from config import Config, conf
 from model.exception.gif_fetch_error import GifFetchError
@@ -20,19 +18,18 @@ class GifService:
         '''Fetches a random GIF from Tenor based on query.'''
 
         logging.info(f'getting a gif for "{query}"')
+        
+        request_url = f'{self.config.tenor_base_url}/search?q={query}&key={self.config.tenor_token}&limit={self.config.tenor_limit}'
 
-        r = requests.get(
-            f'{self.config.tenor_base_url}/search?q={query}&key={self.config.tenor_token}&limit={self.config.tenor_limit}'
-        )
+        async with aiohttp.ClientSession() as sess:
+            async with sess.get(request_url) as r:
+                if r.status != 200:
+                    logging.error(f'status code of a request not 200 - is {r.status} for query "{query}"')
+                    raise GifFetchError
 
-        if r.status_code != 200:
-            logging.error(f'status code of a request not 200 - is {r.status_code} for query "{query}"')
-
-            raise GifFetchError
+                gifs = await r.json()
 
         try:
-            gifs = json.loads(r.content)
-
             selected_gif = random.choice(gifs['results'])
 
             gif_object = Gif(
@@ -45,7 +42,6 @@ class GifService:
 
         except IndexError:
             logging.warning(f'could not find gif results for query "{query}"')
-
             raise NoGifResults
 
 
