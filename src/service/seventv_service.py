@@ -69,10 +69,11 @@ class SeventvProviderService(IEmoteProviderService):
                 emotes = await r.json()
 
             try:
-                matching_emotes = [ emote for emote in emotes['data']['search_emotes'] if emote['name'].lower() == query.lower() ]
                 all_emotes = emotes['data']['search_emotes']
+                exact_match_emotes = [ emote for emote in all_emotes if emote['name'] == query ]
+                match_emotes = [ emote for emote in all_emotes if emote['name'].lower() == query.lower() ]
 
-                emote = matching_emotes[0] if len(matching_emotes) > 0 else all_emotes[0]
+                emote = exact_match_emotes[0] if len(exact_match_emotes) > 0 else match_emotes[0] if len(match_emotes) > 0 else all_emotes[0]
 
                 emote_id = emote['id']
                 emote_name = emote['name']
