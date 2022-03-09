@@ -59,7 +59,7 @@ class SevenTVCog(commands.Cog):
                 await self.embed_sender_service.send_error(ctx, Messages.ERROR_FETCHING_EMOTES)
             
             except TooLargeEmote:
-                await self.embed_sender_service.send_error(ctx, 'Requested emote is too large')
+                await self.embed_sender_service.send_error(ctx, Messages.EMOTE_TOO_LARGE)
 
         return decorator
 

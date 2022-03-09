@@ -52,7 +52,7 @@ class EmbedSenderService:
         '''Sends an emote as a file, which is later deleted.'''
 
         try:
-            await ctx.send(content=emote.name, file=nextcord.File(emote.filename))
+            await ctx.send(content=f'**{emote.name}**', file=nextcord.File(emote.filename))
 
         except nextcord.HTTPException as e:
             if e.status == 413:
