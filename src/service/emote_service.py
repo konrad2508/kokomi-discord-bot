@@ -20,7 +20,7 @@ class EmoteService:
         except KeyError:
             raise NoProviderException
 
-        gif = provider_service.get_emote(query)
+        gif = await provider_service.get_emote(query)
 
         return gif
 
