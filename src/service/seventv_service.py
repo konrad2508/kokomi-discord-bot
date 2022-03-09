@@ -67,8 +67,11 @@ class SeventvProviderService(IEmoteProviderService):
         
         try:
             emotes = json.loads(r.content)
+            
+            matching_emotes = [ emote for emote in emotes['data']['search_emotes'] if emote['name'].lower() == query.lower() ]
+            all_emotes = emotes['data']['search_emotes']
 
-            emote = emotes['data']['search_emotes'][0]
+            emote = matching_emotes[0] if len(matching_emotes) > 0 else all_emotes[0]
 
             emote_id = emote['id']
             emote_name = emote['name']
