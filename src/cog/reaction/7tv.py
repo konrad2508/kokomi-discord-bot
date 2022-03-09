@@ -9,6 +9,7 @@ from model.exception.emote_fetch_error import EmoteFetchError
 from model.exception.missing_argument import MissingArgument
 from model.exception.no_emote_results import NoEmoteResults
 from model.exception.not_in_server import NotInServer
+from model.exception.too_large_emote import TooLargeEmote
 from service.api_wrapper_service import APIWrapperService
 from service.embed_sender_service import EmbedSenderService, embed_sender_service
 from service.emote_service import EmoteService, emote_service
@@ -56,6 +57,9 @@ class SevenTVCog(commands.Cog):
             
             except EmoteFetchError:
                 await self.embed_sender_service.send_error(ctx, Messages.ERROR_FETCHING_EMOTES)
+            
+            except TooLargeEmote:
+                await self.embed_sender_service.send_error(ctx, 'Requested emote is too large')
 
         return decorator
 
