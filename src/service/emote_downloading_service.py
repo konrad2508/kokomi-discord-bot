@@ -15,6 +15,8 @@ class EmoteDownloadingService:
         '''Downloads an emote from emote_content byte stream. emote_mime is used to determine
         whether conversion is needed (and how to convert). Returns filename of downloaded emote.'''
 
+        logging.info('downloading and converting an emote')
+
         emote_filename = uuid.uuid4().hex
 
         match emote_mime:
@@ -25,11 +27,15 @@ class EmoteDownloadingService:
                 emote_bytes.seek(0)
 
                 if em.is_animated:
+                    logging.info('emote is an animated webp')
+
                     emote_filename = f'{emote_filename}.gif'
 
                     pipe = await asyncio.create_subprocess_exec('convert', '-', '-coalesce', emote_filename, stdin=asyncio.subprocess.PIPE)
 
                 else:
+                    logging.info('emote is a static webp')
+
                     emote_filename = f'{emote_filename}.png'
 
                     pipe = await asyncio.create_subprocess_exec('convert', '-', emote_filename, stdin=asyncio.subprocess.PIPE)
@@ -37,6 +43,8 @@ class EmoteDownloadingService:
                 await pipe.communicate(emote_bytes.read())
 
             case 'image/gif':
+                logging.info('emote is a gif')
+
                 emote_bytes = BytesIO(emote_content)
 
                 emote_filename = f'{emote_filename}.gif'
@@ -45,6 +53,8 @@ class EmoteDownloadingService:
                 await pipe.communicate(emote_bytes.read())
 
             case 'image/png':
+                logging.info('emote is a png')
+
                 emote_filename = f'{emote_filename}.png'
 
                 with open(emote_filename, 'wb') as f:
