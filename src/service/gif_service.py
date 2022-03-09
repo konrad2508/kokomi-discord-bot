@@ -38,6 +38,8 @@ class GifService:
                 selected_gif['url']
             )
 
+            logging.info('found a gif')
+
             return gif_object
 
         except IndexError:
