@@ -1,5 +1,5 @@
-# For more information, please refer to https://aka.ms/vscode-docker-python
-FROM python:3.10.2-slim
+# Use archlinux base image
+FROM archlinux
 
 # Keeps Python from generating .pyc files in the container
 ENV PYTHONDONTWRITEBYTECODE=1
@@ -7,23 +7,26 @@ ENV PYTHONDONTWRITEBYTECODE=1
 # Turns off buffering for easier container logging
 ENV PYTHONUNBUFFERED=1
 
-# Install pip requirements
-COPY requirements.txt .
-RUN python -m pip install -r requirements.txt
+# Install packages
+RUN pacman --noconfirm -Syyu
+RUN pacman --noconfirm -S python python-virtualenv ffmpeg imagemagick
+RUN find /var/cache/pacman/ -type f -delete
 
-# Install ffmpeg
-RUN apt-get -y update
-RUN apt-get install -y ffmpeg imagemagick
+# Install pip requirements to virtualenv
+COPY requirements.txt .
+
+RUN virtualenv --system-site-packages /vpy3
+RUN /vpy3/bin/pip install --no-cache-dir --upgrade pip
+RUN /vpy3/bin/pip install --no-cache-dir -r requirements.txt
 
 # Copy application
 WORKDIR /app
 COPY . /app
 
-# Creates a non-root user with an explicit UID and adds permission to access the /app folder
-# For more info, please refer to https://aka.ms/vscode-docker-python-configure-containers
-RUN adduser -u 3847 --disabled-password --gecos "" appuser && chown -R appuser /app
+# Create user
+RUN useradd -m -U -u 1000 appuser && chown -R appuser:appuser /app /vpy3
 USER appuser
 
-# During debugging, this entry point will be overridden. For more information, please refer to https://aka.ms/vscode-docker-python-debug
+# Start the application
 WORKDIR /app/src
-CMD ["python", "app.py"]
+CMD ["/vpy3/bin/python", "app.py"]
