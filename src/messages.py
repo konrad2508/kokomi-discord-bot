@@ -23,6 +23,7 @@ class Messages:
     SKIPPED_SONG = 'Skipped currently playing song'
     ERROR_FETCHING_GIFS = 'There was an error fetching GIFs'
     ERROR_FETCHING_EMOTES = 'There was an error fetching an emote'
+    EMOTE_TOO_LARGE = 'Requested emote is too large'
 
     @staticmethod
     def CURRENTLY_PLAYING(currently_playing: CurrentlyPlaying) -> str:
