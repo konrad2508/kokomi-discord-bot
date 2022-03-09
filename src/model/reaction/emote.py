@@ -6,4 +6,4 @@ class Emote:
     '''Dataclass representing an emote'''
 
     name: str
-    url: str
+    filename: str

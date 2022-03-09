@@ -1,8 +1,11 @@
+import os
+
 import nextcord
 from nextcord.ext import commands
 
 from colours import Colours
 from embed_titles import EmbedTitles
+from model.exception.too_large_emote import TooLargeEmote
 from model.reaction.emote import Emote
 from model.reaction.gif import Gif
 
@@ -46,12 +49,20 @@ class EmbedSenderService:
         await ctx.send(content=None, embed=embed)
 
     async def send_emote(self, ctx: commands.Context, emote: Emote) -> None:
-        '''Sends an embed representing an emote.'''
+        '''Sends an emote as a file, which is later deleted.'''
 
-        embed = (nextcord.Embed(colour=nextcord.Colour.from_rgb(*Colours.SUCCESS), title=emote.name)
-                .set_image(url=emote.url))
+        try:
+            await ctx.send(content=emote.name, file=nextcord.File(emote.filename))
 
-        await ctx.send(content=None, embed=embed)
+        except nextcord.HTTPException as e:
+            if e.status == 413:
+                raise TooLargeEmote
+
+            else:
+                raise
+
+        finally:
+            os.remove(emote.filename)
 
 
 embed_sender_service = EmbedSenderService()

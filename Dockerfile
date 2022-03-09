@@ -13,7 +13,7 @@ RUN python -m pip install -r requirements.txt
 
 # Install ffmpeg
 RUN apt-get -y update
-RUN apt-get install -y ffmpeg
+RUN apt-get install -y ffmpeg imagemagick
 
 # Copy application
 WORKDIR /app
