@@ -8,6 +8,7 @@ from model.exception.missing_argument import MissingArgument
 from model.exception.music_queue_locked import MusicQueueLocked
 from model.exception.not_in_server import NotInServer
 from model.exception.not_yet_connected import NotYetConnected
+from model.exception.unsupported_source import UnsupportedSource
 from service.api_wrapper_service import APIWrapperService
 from service.embed_sender_service import EmbedSenderService, embed_sender_service
 from service.music_player_service import MusicPlayerService, music_player_service
@@ -60,6 +61,9 @@ class PlayCog(commands.Cog):
             
             except MissingArgument:
                 await self.embed_sender_service.send_error(ctx, Messages.MISSING_ARGUMENTS)
+            
+            except UnsupportedSource:
+                await self.embed_sender_service.send_error(ctx, Messages.UNSUPPORTED_SONG_SOURCE)
 
         return decorator
 
