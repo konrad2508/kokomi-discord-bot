@@ -20,5 +20,9 @@ class Config:
         self.seventv_emote_url = os.environ.get('SEVENTV_EMOTE_URL', '')
         self.seventv_limit = os.environ.get('SEVENTV_LIMIT', '')
 
+        self.database_connection_string = os.environ.get('DATABASE_CONNECTION_STRING', '')
+        self.database_name = os.environ.get('DATABASE_NAME', '')
+        self.database_emote_collection_name = os.environ.get('DATABASE_EMOTE_COLLECTION_NAME', '')
+
 
 conf = Config()

@@ -11,21 +11,26 @@ from model.exception.no_emote_results import NoEmoteResults
 from model.exception.not_in_server import NotInServer
 from model.exception.too_large_emote import TooLargeEmote
 from service.api_wrapper_service import APIWrapperService
+from service.database_service import DatabaseService, database_service
 from service.embed_sender_service import EmbedSenderService, embed_sender_service
 from service.emote_service import EmoteService, emote_service
 
 
-class SevenTVCog(commands.Cog):
-    '''Class representing the 7tv command. This returns a 7TV emote based on the user's input.'''
+class SeventvCog(commands.Cog):
+    '''Class representing the 7tv command. This returns a 7TV emote based on the user's input.
+    First, the repository is checked whether the emote has already been cached and can be reused.
+    If not, retrieves the emote from 7TV.'''
 
     def __init__(
             self,
             aw: Type[APIWrapperService],
             ess: EmbedSenderService,
-            es: EmoteService) -> None:
+            es: EmoteService,
+            ds: DatabaseService) -> None:
         self.api_wrapper = aw
         self.embed_sender_service = ess
         self.emote_service = es
+        self.database_service = ds
 
     @staticmethod
     def checker(func: Callable) -> Callable:
@@ -35,7 +40,7 @@ class SevenTVCog(commands.Cog):
         to the command.'''
 
         @wraps(func)
-        async def decorator(self: 'SevenTVCog', ctx: commands.Context, *, query: str):
+        async def decorator(self: 'SeventvCog', ctx: commands.Context, *, query: str):
             api = self.api_wrapper(ctx)
 
             try:
@@ -68,10 +73,18 @@ class SevenTVCog(commands.Cog):
     async def emote_command(self, ctx: commands.Context, *, query: str = ..., api: APIWrapperService = ...) -> None:
         '''Body of the command.'''
 
-        emote = await self.emote_service.get_emote(query, EmoteProviders.SEVENTV)
+        possible_emote = await self.database_service.get_emote(query, EmoteProviders.SEVENTV)
 
-        await self.embed_sender_service.send_emote(ctx, emote)
+        if possible_emote is not None:
+            await self.embed_sender_service.send_emote(ctx, possible_emote)
+
+        else:
+            emote = await self.emote_service.get_emote(query, EmoteProviders.SEVENTV)
+
+            uploaded_url = await self.embed_sender_service.send_emote(ctx, emote)
+
+            await self.database_service.cache_emote(emote, query, EmoteProviders.SEVENTV, uploaded_url)
 
 
 def setup(bot: commands.Bot) -> None:
-    bot.add_cog(SevenTVCog(APIWrapperService, embed_sender_service, emote_service))
+    bot.add_cog(SeventvCog(APIWrapperService, embed_sender_service, emote_service, database_service))

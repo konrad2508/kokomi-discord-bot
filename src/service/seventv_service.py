@@ -4,7 +4,7 @@ import aiohttp
 from config import Config, conf
 from model.exception.emote_fetch_error import EmoteFetchError
 from model.exception.no_emote_results import NoEmoteResults
-from model.reaction.emote import Emote
+from model.reaction.downloaded_emote import DownloadedEmote
 from service.emote_downloading_service import EmoteDownloadingService, emote_downloader
 from service.i_emote_provider_service import IEmoteProviderService
 
@@ -16,7 +16,7 @@ class SeventvProviderService(IEmoteProviderService):
         self.config = conf
         self.emote_downloader = emote_downloader
 
-    async def get_emote(self, query: str) -> Emote:
+    async def get_emote(self, query: str) -> DownloadedEmote:
         '''Gets an emote based on query from 7TV.'''
 
         logging.info(f'getting a 7tv emote for "{query}"')
@@ -89,7 +89,7 @@ class SeventvProviderService(IEmoteProviderService):
                 emote_filename = await self.emote_downloader.download(emote_mime, emote_content)
                 logging.info(f'downloaded {emote_name}')
 
-                return Emote(emote_name, emote_filename)
+                return DownloadedEmote(emote_name, emote_filename)
 
             except IndexError:
                 logging.warning(f'could not find emote results for query "{query}"')
