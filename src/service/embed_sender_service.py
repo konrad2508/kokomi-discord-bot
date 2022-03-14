@@ -6,6 +6,8 @@ from nextcord.ext import commands
 from colours import Colours
 from embed_titles import EmbedTitles
 from model.exception.too_large_emote import TooLargeEmote
+from model.reaction.cached_emote import CachedEmote
+from model.reaction.downloaded_emote import DownloadedEmote
 from model.reaction.emote import Emote
 from model.reaction.gif import Gif
 
@@ -48,21 +50,39 @@ class EmbedSenderService:
 
         await ctx.send(content=None, embed=embed)
 
-    async def send_emote(self, ctx: commands.Context, emote: Emote) -> None:
-        '''Sends an emote as a file, which is later deleted.'''
+    async def send_emote(self, ctx: commands.Context, emote: Emote) -> str:
+        '''Sends an emote. Returns the url of the sent emote, to allow caching.'''
 
-        try:
-            await ctx.send(content=f'**{emote.name}**', file=nextcord.File(emote.filename))
+        match emote:
+            case DownloadedEmote():
+                try:
+                    embed = (nextcord.Embed(colour=nextcord.Colour.from_rgb(*Colours.SUCCESS), title=emote.name)
+                            .set_image(url=f'attachment://{emote.filename}'))
 
-        except nextcord.HTTPException as e:
-            if e.status == 413:
-                raise TooLargeEmote
+                    message = await ctx.send(content=None, embed=embed, file=nextcord.File(emote.filename))
 
-            else:
-                raise
+                    return message.embeds[0].image.proxy_url
 
-        finally:
-            os.remove(emote.filename)
+                except nextcord.HTTPException as e:
+                    if e.status == 413:
+                        raise TooLargeEmote
+
+                    else:
+                        raise
+
+                finally:
+                    os.remove(emote.filename)
+
+            case CachedEmote():
+                embed = (nextcord.Embed(colour=nextcord.Colour.from_rgb(*Colours.SUCCESS), title=emote.name)
+                        .set_image(url=emote.url))
+                
+                await ctx.send(content=None, embed=embed)
+
+                return emote.url
+
+            case _:
+                raise RuntimeError('emote should not be of type Emote, should be derived')
 
 
 embed_sender_service = EmbedSenderService()
