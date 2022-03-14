@@ -24,6 +24,7 @@ class Messages:
     ERROR_FETCHING_GIFS = 'There was an error fetching GIFs'
     ERROR_FETCHING_EMOTES = 'There was an error fetching an emote'
     EMOTE_TOO_LARGE = 'Requested emote is too large'
+    UNSUPPORTED_SONG_SOURCE = 'Could not play the song from specified website'
 
     @staticmethod
     def CURRENTLY_PLAYING(currently_playing: CurrentlyPlaying) -> str:

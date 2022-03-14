@@ -7,6 +7,7 @@ import yt_dlp
 from nextcord import FFmpegPCMAudio, AudioSource
 
 from audio_source.i_pcm_source import IPCMSource
+from model.exception.unsupported_source import UnsupportedSource
 
 
 class YtdlpPCMSource(IPCMSource):
@@ -49,8 +50,12 @@ class YtdlpPCMSource(IPCMSource):
 
         logging.info(f'fetching info for {url}')
 
-        ytdl = yt_dlp.YoutubeDL(cls._YTDL_FORMAT_OPTIONS)
-        data: dict = ytdl.extract_info(url, download=False)
+        try:
+            ytdl = yt_dlp.YoutubeDL(cls._YTDL_FORMAT_OPTIONS)
+            data: dict = ytdl.extract_info(url, download=False)
+
+        except yt_dlp.utils.DownloadError:
+            raise UnsupportedSource
 
         logging.info(f'found info for {url}')
 
