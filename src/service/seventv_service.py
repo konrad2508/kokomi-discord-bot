@@ -16,8 +16,10 @@ class SeventvProviderService(IEmoteProviderService):
         self.config = conf
         self.emote_downloader = emote_downloader
 
-    async def get_emote(self, query: str) -> DownloadedEmote:
+    async def get_emote(self, query: str, use_raw: bool) -> DownloadedEmote:
         '''Gets an emote based on query from 7TV.'''
+
+        fixed_query = query.split(' ')[1] if use_raw else query
 
         logging.info(f'getting a 7tv emote for "{query}"')
 
@@ -54,7 +56,7 @@ class SeventvProviderService(IEmoteProviderService):
             'variables': {
                 'globalState': 'include',
                 'pageSize': int(self.config.seventv_limit),
-                'query': query,
+                'query': fixed_query,
                 'sortBy': 'popularity',
                 'sortOrder': 0
             }
@@ -70,15 +72,19 @@ class SeventvProviderService(IEmoteProviderService):
 
             try:
                 all_emotes = emotes['data']['search_emotes']
+                exact_match_emotes = [ emote for emote in all_emotes if emote['name'] == fixed_query ]
 
-                if query.islower():
-                    emote = all_emotes[0]
+                if use_raw:
+                    emote = exact_match_emotes[0]
 
                 else:
-                    exact_match_emotes = [ emote for emote in all_emotes if emote['name'] == query ]
-                    match_emotes = [ emote for emote in all_emotes if emote['name'].lower() == query.lower() ]
+                    if fixed_query.islower():
+                        emote = all_emotes[0]
 
-                    emote = exact_match_emotes[0] if len(exact_match_emotes) > 0 else match_emotes[0] if len(match_emotes) > 0 else all_emotes[0]
+                    else:
+                        match_emotes = [ emote for emote in all_emotes if emote['name'].lower() == fixed_query.lower() ]
+
+                        emote = exact_match_emotes[0] if len(exact_match_emotes) > 0 else match_emotes[0] if len(match_emotes) > 0 else all_emotes[0]
 
                 emote_id = emote['id']
                 emote_name = emote['name']

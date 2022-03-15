@@ -24,7 +24,8 @@ class Messages:
     ERROR_FETCHING_GIFS = 'There was an error fetching GIFs'
     ERROR_FETCHING_EMOTES = 'There was an error fetching an emote'
     EMOTE_TOO_LARGE = 'Requested emote is too large'
-    UNSUPPORTED_SONG_SOURCE = 'Could not play the song from specified website'
+    UNSUPPORTED_SONG_SOURCE = 'Could not play the song from the specified website'
+    INVALID_OPTION = 'Passed an invalid option to the command'
 
     @staticmethod
     def CURRENTLY_PLAYING(currently_playing: CurrentlyPlaying) -> str:
@@ -84,7 +85,7 @@ class Messages:
             (f"```{prefix}queue```", "Shows the song queue"),
             (f"```{prefix}skip```", "Skips the currently playing song"),
             (f"```{prefix}gif <Query>```", "Posts a random GIF from Tenor based on **Query**"),
-            (f"```{prefix}7tv <Query>```", "Posts an emote from 7TV based on **Query**")
+            (f"```{prefix}7tv [Option] <Query>```", "Posts an emote from 7TV based on **Query**. If option **--raw** is passed, **Query** is interpreted as-is (the emote's name matches it exactly). Otherwise, an emote is selected based on the most probable intention of the author.")
         ]
 
         return commands
