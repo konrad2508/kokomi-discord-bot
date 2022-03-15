@@ -6,6 +6,7 @@ from nextcord.ext import commands
 from messages import Messages
 from model.enum.emote_providers import EmoteProviders
 from model.exception.emote_fetch_error import EmoteFetchError
+from model.exception.invalid_option import InvalidOption
 from model.exception.missing_argument import MissingArgument
 from model.exception.no_emote_results import NoEmoteResults
 from model.exception.not_in_server import NotInServer
@@ -49,7 +50,17 @@ class SeventvCog(commands.Cog):
                 if query is ...:
                     raise MissingArgument
 
-                await func(self, ctx, query=query, api=api)
+                splitted_query = query.split(' ')
+                opts = {
+                    'use_raw': '--raw'
+                }
+
+                if splitted_query[0].startswith('--') and splitted_query[0] not in opts.values():
+                    raise InvalidOption
+
+                use_raw = splitted_query[0] == opts['use_raw']
+
+                await func(self, ctx, query=query, use_raw=use_raw)
 
             except NotInServer:
                 await self.embed_sender_service.send_error(ctx, Messages.AUTHOR_NOT_IN_SERVER)
@@ -65,12 +76,15 @@ class SeventvCog(commands.Cog):
             
             except TooLargeEmote:
                 await self.embed_sender_service.send_error(ctx, Messages.EMOTE_TOO_LARGE)
+            
+            except InvalidOption:
+                await self.embed_sender_service.send_error(ctx, Messages.INVALID_OPTION)
 
         return decorator
 
     @commands.command(name='7tv')
     @checker
-    async def emote_command(self, ctx: commands.Context, *, query: str = ..., api: APIWrapperService = ...) -> None:
+    async def emote_command(self, ctx: commands.Context, *, query: str = ..., use_raw: bool = ...) -> None:
         '''Body of the command.'''
 
         possible_emote = await self.database_service.get_emote(query, EmoteProviders.SEVENTV)
@@ -79,7 +93,7 @@ class SeventvCog(commands.Cog):
             await self.embed_sender_service.send_emote(ctx, possible_emote)
 
         else:
-            emote = await self.emote_service.get_emote(query, EmoteProviders.SEVENTV)
+            emote = await self.emote_service.get_emote(query, EmoteProviders.SEVENTV, use_raw)
 
             uploaded_url = await self.embed_sender_service.send_emote(ctx, emote)
 
