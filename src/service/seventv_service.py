@@ -70,10 +70,15 @@ class SeventvProviderService(IEmoteProviderService):
 
             try:
                 all_emotes = emotes['data']['search_emotes']
-                exact_match_emotes = [ emote for emote in all_emotes if emote['name'] == query ]
-                match_emotes = [ emote for emote in all_emotes if emote['name'].lower() == query.lower() ]
 
-                emote = exact_match_emotes[0] if len(exact_match_emotes) > 0 else match_emotes[0] if len(match_emotes) > 0 else all_emotes[0]
+                if query.islower():
+                    emote = all_emotes[0]
+
+                else:
+                    exact_match_emotes = [ emote for emote in all_emotes if emote['name'] == query ]
+                    match_emotes = [ emote for emote in all_emotes if emote['name'].lower() == query.lower() ]
+
+                    emote = exact_match_emotes[0] if len(exact_match_emotes) > 0 else match_emotes[0] if len(match_emotes) > 0 else all_emotes[0]
 
                 emote_id = emote['id']
                 emote_name = emote['name']
