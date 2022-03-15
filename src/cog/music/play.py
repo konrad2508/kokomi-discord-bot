@@ -8,6 +8,7 @@ from model.exception.missing_argument import MissingArgument
 from model.exception.music_queue_locked import MusicQueueLocked
 from model.exception.not_in_server import NotInServer
 from model.exception.not_yet_connected import NotYetConnected
+from model.exception.song_is_playlist import SongIsPlaylist
 from model.exception.unsupported_source import UnsupportedSource
 from service.api_wrapper_service import APIWrapperService
 from service.embed_sender_service import EmbedSenderService, embed_sender_service
@@ -64,6 +65,9 @@ class PlayCog(commands.Cog):
             
             except UnsupportedSource:
                 await self.embed_sender_service.send_error(ctx, Messages.UNSUPPORTED_SONG_SOURCE)
+            
+            except SongIsPlaylist:
+                await self.embed_sender_service.send_error(ctx, 'Specified link leads to a playlist')
 
         return decorator
 
