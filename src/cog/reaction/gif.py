@@ -8,6 +8,7 @@ from model.exception.gif_fetch_error import GifFetchError
 from model.exception.missing_argument import MissingArgument
 from model.exception.no_gif_results import NoGifResults
 from model.exception.not_in_server import NotInServer
+from model.exception.query_too_long import QueryTooLong
 from service.api_wrapper_service import APIWrapperService
 from service.embed_sender_service import EmbedSenderService, embed_sender_service
 from service.gif_service import GifService, gif_service
@@ -42,6 +43,9 @@ class GifCog(commands.Cog):
                 if query is ...:
                     raise MissingArgument
 
+                if len(query) > 256:
+                    raise QueryTooLong
+
                 await func(self, ctx, query=query, api=api)
 
             except NotInServer:
@@ -55,6 +59,9 @@ class GifCog(commands.Cog):
             
             except GifFetchError:
                 await self.embed_sender_service.send_error(ctx, Messages.ERROR_FETCHING_GIFS)
+            
+            except QueryTooLong:
+                await self.embed_sender_service.send_error(ctx, Messages.QUERY_TOO_LONG)
 
         return decorator
 
