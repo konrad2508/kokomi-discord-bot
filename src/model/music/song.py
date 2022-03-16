@@ -6,22 +6,24 @@ from audio_source.i_pcm_source import IPCMSource
 
 
 class Song:
-    song_type: Type[IPCMSource]
-    title: str
-    url: str
+    '''Class representing a song.'''
+
+    def __init__(self, song_type: Type[IPCMSource], title: str, url: str) -> None:
+        self.song_type = song_type
+        self.title = title
+        self.url = url
 
     @classmethod
-    async def create(cls, song_type: Type[IPCMSource], source: str) -> Song:
-        self = cls()
+    async def from_search(cls, song_type: Type[IPCMSource], source: str) -> Song:
+        '''Creates an instance of Song by fetching song's info from the Internet.'''
+
+        instance = await song_type.from_search(source)
         
-        self.song_type = song_type
-
-        instance = await self.song_type.from_search(source)
-
-        self.title = instance.title
-        self.url = instance.url
+        self = cls(song_type, instance.title, instance.url)
 
         return self
 
     async def get_instance(self) -> IPCMSource:
+        '''Returns a fresh instance of the song.'''
+
         return await self.song_type.from_search(self.url)

@@ -5,3 +5,4 @@ python-dotenv==0.19.2
 Pillow==9.0.0
 pymongo==4.0.2
 dnspython==2.2.1
+youtube-search-python==1.6.2

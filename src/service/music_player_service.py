@@ -65,22 +65,30 @@ class MusicPlayerService:
             self,
             id: int,
             on_added: Callable,
+            on_added_playlist: Callable,
             on_play: Callable,
             on_end: Callable,
             loop: asyncio.AbstractEventLoop,
-            link: str) -> None:
+            link: str,
+            use_playlist: bool) -> None:
         '''Plays a song in a voice channel.'''
         
         server = self.voice_channels[id]
 
-        song = await self.song_service.get_song(link)
+        if use_playlist:
+            songs = self.song_service.get_playlist(link)
+            server.queue += songs
 
-        server.queue.append(song)
+            await on_added_playlist(len(songs))
+        
+        else:
+            song = await self.song_service.get_song(link)
+            server.queue.append(song)
 
         if not server.connection.is_playing():
             await self._play_from_queue(id, on_play, on_end, loop, None)
 
-        else:
+        elif not use_playlist:
             await on_added(song.title, song.url)
 
     def now_playing(self, id: int) -> CurrentlyPlaying:
