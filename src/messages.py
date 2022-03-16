@@ -30,6 +30,7 @@ class Messages:
     PLAYLIST_IS_SONG = 'Specified link leads to a song'
     UNSUPPORTED_PLAYLIST_SOURCE = 'Specified link leads to an unsupported source'
     CANNOT_ADD_PLAYLIST = 'Could not add the playlist to the queue'
+    PURGED_QUEUE = 'The queue has been emptied'
 
 
     @staticmethod
@@ -50,7 +51,7 @@ class Messages:
     
     @staticmethod
     def ADDED_PLAYLIST(count: int) -> str:
-        return f'Added {count} song{"s" if count > 1 else ""}'
+        return f"Added {count} song{'s' if count > 1 else ''}"
 
     @staticmethod
     def PLAYING_SONG(title: str, url: str) -> str:
@@ -85,15 +86,16 @@ class Messages:
     @staticmethod
     def HELP(prefix: str) -> list[tuple[str, str]]:
         commands = [
-            (f"```{prefix}help```", "Displays this message"),
-            (f"```{prefix}join```", "Joins your voice channel"),
-            (f"```{prefix}leave```", "Leaves the voice channel"),
-            (f"```{prefix}loop```", "Loops (or unloops) currently playing song"),
-            (f"```{prefix}nowplaying```", "Shows information about the currently playing song"),
-            (f"```{prefix}play [Option] <URL | Query>```", "Plays a song from **URL** or plays the first song from YouTube based on **Query**. If option **--playlist** is passed, adds songs from playlist in **URL** to the queue."),
-            (f"```{prefix}queue```", "Shows the song queue"),
-            (f"```{prefix}skip```", "Skips the currently playing song"),
-            (f"```{prefix}gif <Query>```", "Posts a random GIF from Tenor based on **Query**"),
+            (f"```{prefix}help```", "Displays this message."),
+            (f"```{prefix}join```", "Joins your voice channel."),
+            (f"```{prefix}leave```", "Leaves the voice channel."),
+            (f"```{prefix}loop```", "Loops (or unloops) the currently playing song."),
+            (f"```{prefix}nowplaying```", "Shows information about the currently playing song."),
+            (f"```{prefix}play [Option] <URL | Query>```", "Plays a song from **URL** or plays the first song from YouTube based on **Query**. If the option **--playlist** is passed, adds songs from the playlist in **URL** to the queue."),
+            (f"```{prefix}queue```", "Shows the song queue."),
+            (f"```{prefix}skip```", "Skips the currently playing song."),
+            (f"```{prefix}purge```", "Clears the queue and stops the currently playing song."),
+            (f"```{prefix}gif <Query>```", "Posts a random GIF from Tenor based on **Query**."),
             (f"```{prefix}7tv [Option] <Query>```", "Posts an emote from 7TV based on **Query**. If option **--raw** is passed, **Query** is interpreted as-is (the emote's name matches it exactly). Otherwise, an emote is selected based on the most probable intention of the author.")
         ]
 
