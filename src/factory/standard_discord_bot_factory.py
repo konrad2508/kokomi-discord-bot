@@ -20,6 +20,7 @@ class StandardDiscordBotFactory(IDiscordBotFactory):
             'cog.music.skip',
             'cog.music.queue',
             'cog.music.loop',
+            'cog.music.purge',
             'cog.reaction.gif',
             'cog.reaction.7tv'
         ]

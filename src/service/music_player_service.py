@@ -135,6 +135,16 @@ class MusicPlayerService:
 
         return result
 
+    def purge(self, id: int) -> None:
+        '''Clears the queue and stops the currently playing song.'''
+
+        server = self.voice_channels[id]
+
+        server.is_looped = False
+        server.queue = []
+
+        server.connection.stop()
+
     async def _play_from_queue(
             self,
             id: int,
