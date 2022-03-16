@@ -31,6 +31,7 @@ class Messages:
     UNSUPPORTED_PLAYLIST_SOURCE = 'Specified link leads to an unsupported source'
     CANNOT_ADD_PLAYLIST = 'Could not add the playlist to the queue'
     PURGED_QUEUE = 'The queue has been emptied'
+    QUERY_TOO_LONG = 'The query is too long (must be 256 or fewer in length)'
 
 
     @staticmethod
