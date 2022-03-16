@@ -1,9 +1,14 @@
+from __future__ import annotations
+
 import logging
 import re
 
 from audio_source.ytdlp_pcm_source import YtdlpPCMSource
+from model.exception.playlist_is_song import PlaylistIsSong
+from model.exception.playlist_source_not_supported import PlaylistSourceNotSupported
 from model.exception.song_is_playlist import SongIsPlaylist
 from model.music.song import Song
+from model.music.youtube_playlist import YoutubePlaylist
 
 
 class SongService:
@@ -14,10 +19,24 @@ class SongService:
 
         if re.match(r'^.*www.youtube.com\/playlist', source) is not None:
             raise SongIsPlaylist
-        else:
-            song = await Song.create(YtdlpPCMSource, source)
+
+        song = await Song.from_search(YtdlpPCMSource, source)
 
         return song
+    
+    def get_playlist(self, source: str) -> list[Song]:
+        logging.info(f'getting playlist for {source}')
+
+        if re.match(r'^.*www.youtube.com', source) is None:
+            raise PlaylistSourceNotSupported
+
+        if re.match(r'^.*www.youtube.com\/playlist', source) is None:
+            raise PlaylistIsSong
+        
+        playlist = YoutubePlaylist.create(YtdlpPCMSource, source)
+        songs = playlist.songs
+
+        return songs
 
 
 song_service = SongService()

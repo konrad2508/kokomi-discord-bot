@@ -4,10 +4,14 @@ from typing import Callable, Type
 from nextcord.ext import commands
 
 from messages import Messages
+from model.exception.cannot_add_playlist import CannotAddPlaylist
+from model.exception.invalid_option import InvalidOption
 from model.exception.missing_argument import MissingArgument
 from model.exception.music_queue_locked import MusicQueueLocked
 from model.exception.not_in_server import NotInServer
 from model.exception.not_yet_connected import NotYetConnected
+from model.exception.playlist_is_song import PlaylistIsSong
+from model.exception.playlist_source_not_supported import PlaylistSourceNotSupported
 from model.exception.song_is_playlist import SongIsPlaylist
 from model.exception.unsupported_source import UnsupportedSource
 from service.api_wrapper_service import APIWrapperService
@@ -49,7 +53,17 @@ class PlayCog(commands.Cog):
                 if text is ...:
                     raise MissingArgument
 
-                await func(self, ctx, text=text, api=api)
+                splitted_query = text.split(' ')
+                opts = {
+                    'use_playlist': '--playlist'
+                }
+
+                if splitted_query[0].startswith('--') and splitted_query[0] not in opts.values():
+                    raise InvalidOption
+
+                use_playlist = splitted_query[0] == opts['use_playlist']
+
+                await func(self, ctx, text=text, api=api, use_playlist=use_playlist)
 
             except NotInServer:
                 await self.embed_sender_service.send_error(ctx, Messages.AUTHOR_NOT_IN_SERVER)
@@ -67,13 +81,22 @@ class PlayCog(commands.Cog):
                 await self.embed_sender_service.send_error(ctx, Messages.UNSUPPORTED_SONG_SOURCE)
             
             except SongIsPlaylist:
-                await self.embed_sender_service.send_error(ctx, 'Specified link leads to a playlist')
+                await self.embed_sender_service.send_error(ctx, Messages.SONG_IS_PLAYLIST)
+            
+            except PlaylistIsSong:
+                await self.embed_sender_service.send_error(ctx, Messages.PLAYLIST_IS_SONG)
+
+            except PlaylistSourceNotSupported:
+                await self.embed_sender_service.send_error(ctx, Messages.UNSUPPORTED_PLAYLIST_SOURCE)
+            
+            except CannotAddPlaylist:
+                await self.embed_sender_service.send_error(ctx, Messages.CANNOT_ADD_PLAYLIST)
 
         return decorator
 
     @commands.command(name='play', aliases=['p'])
     @checker
-    async def play_command(self, ctx: commands.Context, *, text: str = ..., api: APIWrapperService = ...) -> None:
+    async def play_command(self, ctx: commands.Context, *, text: str = ..., api: APIWrapperService = ..., use_playlist: bool) -> None:
         '''Body of the command.'''
 
         server_id = api.get_server_id()
@@ -81,10 +104,12 @@ class PlayCog(commands.Cog):
         await self.music_player_service.play(
             server_id,
             lambda t, u: self.embed_sender_service.send_success(ctx, Messages.ADDED_SONG(t, u)),
+            lambda c: self.embed_sender_service.send_success(ctx, Messages.ADDED_PLAYLIST(c)),
             lambda t, u: self.embed_sender_service.send_success(ctx, Messages.PLAYING_SONG(t, u)),
             lambda: self.embed_sender_service.send_success(ctx, Messages.QUEUE_ENDED),
             self.bot.loop,
-            text
+            text,
+            use_playlist
         )
 
 def setup(bot: commands.Bot) -> None:
