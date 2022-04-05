@@ -22,7 +22,8 @@ class StandardDiscordBotFactory(IDiscordBotFactory):
             'cog.music.loop',
             'cog.music.purge',
             'cog.reaction.gif',
-            'cog.reaction.7tv'
+            'cog.reaction.7tv',
+            'cog.reaction.bttv'
         ]
 
         return extensions

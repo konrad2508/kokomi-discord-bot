@@ -2,7 +2,8 @@ from model.enum.emote_providers import EmoteProviders
 from model.exception.no_provider_exception import NoProviderException
 from model.reaction.downloaded_emote import DownloadedEmote
 from service.i_emote_provider_service import IEmoteProviderService
-from service.seventv_service import seven_tv_provider
+from service.bttv_provider_service import bttv_provider
+from service.seventv_provider_service import seventv_provider
 
 
 class EmoteService:
@@ -26,5 +27,6 @@ class EmoteService:
 
 
 emote_service = EmoteService({
-    EmoteProviders.SEVENTV: seven_tv_provider
+    EmoteProviders.SEVENTV: seventv_provider,
+    EmoteProviders.BTTV: bttv_provider
 })

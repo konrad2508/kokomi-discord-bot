@@ -107,4 +107,4 @@ class SeventvProviderService(IEmoteProviderService):
                 raise NoEmoteResults
 
 
-seven_tv_provider = SeventvProviderService(conf, emote_downloader)
+seventv_provider = SeventvProviderService(conf, emote_downloader)
