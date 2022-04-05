@@ -97,7 +97,8 @@ class Messages:
             (f"```{prefix}skip```", "Skips the currently playing song."),
             (f"```{prefix}purge```", "Clears the queue and stops the currently playing song."),
             (f"```{prefix}gif <Query>```", "Posts a random GIF from Tenor based on **Query**."),
-            (f"```{prefix}7tv [Option] <Query>```", "Posts an emote from 7TV based on **Query**. If option **--raw** is passed, **Query** is interpreted as-is (the emote's name matches it exactly). Otherwise, an emote is selected based on the most probable intention of the author.")
+            (f"```{prefix}7tv [Option] <Query>```", "Posts an emote from 7TV based on **Query**. If option **--raw** is passed, **Query** is interpreted as-is (the emote's name matches it exactly). Otherwise, an emote is selected based on the most probable intention of the author."),
+            (f"```{prefix}bttv [Option] <Query>```", "Posts an emote from BTTV based on **Query**. If option **--raw** is passed, **Query** is interpreted as-is (the emote's name matches it exactly). Otherwise, an emote is selected based on the most probable intention of the author.")
         ]
 
         return commands
