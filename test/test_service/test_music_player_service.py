@@ -9,6 +9,3 @@ class MusicPlayerServiceTestCase(unittest.TestCase):
         obj = MusicPlayerService(None)
 
         self.assertRaises(NotYetConnected, obj.check_if_connected, 1)
-
-if __name__ == '__main__':
-    unittest.main()
