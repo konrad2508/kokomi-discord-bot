@@ -6,3 +6,4 @@ Pillow==9.0.1
 pymongo==4.0.2
 dnspython==2.2.1
 youtube-search-python==1.6.2
+spotipy==2.19.0
