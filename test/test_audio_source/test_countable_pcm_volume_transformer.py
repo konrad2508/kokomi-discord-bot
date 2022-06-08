@@ -4,7 +4,7 @@ from unittest.mock import patch, call
 from audio_source.countable_pcm_volume_transformer import CountablePCMVolumeTransformer
 
 
-class CountablePCMVolumeTransformerTestCase(unittest.TestCase):
+class CountablePCMVolumeTransformerUnitTestCase(unittest.TestCase):
     def setUp(self) -> None:
         patch('audio_source.countable_pcm_volume_transformer.PCMVolumeTransformer.__init__').start()
         
@@ -55,7 +55,7 @@ class CountablePCMVolumeTransformerTestCase(unittest.TestCase):
         self.assertEqual(self.obj.current_time(), 2)
 
 
-class CountablePCMVolumeTransformerCtorTestCase(unittest.TestCase):
+class CountablePCMVolumeTransformerCtorUnitTestCase(unittest.TestCase):
     def setUp(self) -> None:
         patch('audio_source.countable_pcm_volume_transformer.PCMVolumeTransformer.read').start()
 
