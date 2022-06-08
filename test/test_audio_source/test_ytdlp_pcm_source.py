@@ -113,3 +113,48 @@ class YtdlpPCMSourceUnitTestCase(unittest.IsolatedAsyncioTestCase):
         await YtdlpPCMSource.from_search('url')
 
         self.logging_info_mock.assert_called()
+
+
+class YtdlpPCMSourceIntegrationTestCase(unittest.IsolatedAsyncioTestCase):
+    def setUp(self) -> None:
+        self.super_init_mock = patch('audio_source.ytdlp_pcm_source.IPCMSource.__init__').start()
+        self.logging_info_mock = patch('audio_source.ytdlp_pcm_source.logging.info').start()
+        self.ffmpeg_pcm_audio_ctor = patch('audio_source.ytdlp_pcm_source.FFmpegPCMAudio').start()
+
+    def tearDown(self) -> None:
+        patch.stopall()
+    
+    async def test_from_search_correctly_gets_normal_song_from_youtube(self) -> None:
+        obj = await YtdlpPCMSource.from_search('https://www.youtube.com/watch?v=dQw4w9WgXcQ')
+
+        self.assertEqual(obj.title, 'Rick Astley - Never Gonna Give You Up (Official Music Video)')
+        self.assertEqual(obj.url, 'https://www.youtube.com/watch?v=dQw4w9WgXcQ')
+        self.assertEqual(obj.duration, 212)
+    
+    async def test_from_search_correctly_gets_playlist_song_from_youtube(self) -> None:
+        obj = await YtdlpPCMSource.from_search('https://www.youtube.com/watch?v=q6EoRBvdVPQ&list=PLFsQleAWXsj_4yDeebiIADdH5FMayBiJo&index=1')
+
+        self.assertEqual(obj.title, 'Yee')
+        self.assertEqual(obj.url, 'https://www.youtube.com/watch?v=q6EoRBvdVPQ')
+        self.assertEqual(obj.duration, 9)
+
+    async def test_from_search_correctly_gets_shortened_url_song_from_youtube(self) -> None:
+        obj = await YtdlpPCMSource.from_search('https://youtu.be/dQw4w9WgXcQ')
+
+        self.assertEqual(obj.title, 'Rick Astley - Never Gonna Give You Up (Official Music Video)')
+        self.assertEqual(obj.url, 'https://www.youtube.com/watch?v=dQw4w9WgXcQ')
+        self.assertEqual(obj.duration, 212)
+
+    async def test_from_search_correctly_gets_song_from_soundcloud(self) -> None:
+        obj = await YtdlpPCMSource.from_search('https://soundcloud.com/deathgrips/death-grips-exmilitary-2')
+
+        self.assertEqual(obj.title, 'Death Grips - Exmilitary - 2 - Guillotine')
+        self.assertEqual(obj.url, 'https://soundcloud.com/deathgrips/death-grips-exmilitary-2')
+        self.assertEqual(obj.duration, 223)
+
+    async def test_from_search_correctly_finds_song_from_youtube_based_on_query(self) -> None:
+        obj = await YtdlpPCMSource.from_search('never gonna give you up')
+
+        self.assertEqual(obj.title, 'Rick Astley - Never Gonna Give You Up (Official Music Video)')
+        self.assertEqual(obj.url, 'https://www.youtube.com/watch?v=dQw4w9WgXcQ')
+        self.assertEqual(obj.duration, 212)
