@@ -31,12 +31,12 @@ class YtdlpPCMSource(IPCMSource):
         'options': '-vn'
     }
 
-    def __init__(self, source: AudioSource, data: dict, filename: str) -> None:
-        super().__init__(source, volume=0.5)
+    def __init__(self, source: AudioSource, data: dict, filename: str, volume: float = .5) -> None:
+        super().__init__(source, volume=volume)
 
         self.title: str = data.get('title', '')
         self.url: str = data.get('webpage_url', '')
-        self.duration: int = int(data.get('duration', 0))
+        self.duration: int = int(float(data.get('duration', 0)))
 
         self._filename = filename
         self._data = data
