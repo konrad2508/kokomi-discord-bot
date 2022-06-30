@@ -9,8 +9,16 @@ class StandardDiscordBotFactory(IDiscordBotFactory):
 
     def __init__(self, cfg: Config) -> None:
         self.cfg = cfg
+    
+    def get_bot(self) -> commands.Bot:
+        bot = commands.Bot(command_prefix=self.cfg.prefix, help_command=None)
 
-    def get_extensions(self) -> list[str]:
+        for extension in self._get_extensions():
+            bot.load_extension(extension)
+
+        return bot
+
+    def _get_extensions(self) -> list[str]:
         extensions = [
             'cog.core.help',
             'cog.music.join',
@@ -27,8 +35,3 @@ class StandardDiscordBotFactory(IDiscordBotFactory):
         ]
 
         return extensions
-    
-    def get_bot(self) -> commands.Bot:
-        bot = commands.Bot(command_prefix=self.cfg.prefix, help_command=None)
-
-        return bot
