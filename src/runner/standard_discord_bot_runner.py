@@ -12,7 +12,6 @@ class StandardDiscordBotRunner(IDiscordBotRunner):
 
     def __init__(self, cfg: Config, fac: IDiscordBotFactory) -> None:
         self.cfg = cfg
-        self.extensions = fac.get_extensions()
         self.bot = fac.get_bot()
 
     def run(self) -> None:
@@ -23,8 +22,5 @@ class StandardDiscordBotRunner(IDiscordBotRunner):
                 logging.info(f'nextcord version {nextcord.__version__}')
 
             await self.bot.change_presence(activity=nextcord.Game(name=f'{self.bot.command_prefix}help'))
-
-        for extension in self.extensions:
-            self.bot.load_extension(extension)
 
         self.bot.run(self.cfg.token, reconnect=True)
