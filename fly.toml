@@ -1,0 +1,14 @@
+# fly.toml file generated for kokomi-discord-bot on 2022-08-26T15:40:55+02:00
+
+app = "kokomi-discord-bot"
+kill_signal = "SIGINT"
+kill_timeout = 5
+processes = []
+
+[env]
+
+[experimental]
+  allowed_public_ports = []
+  auto_rollback = true
+
+[[services]]
