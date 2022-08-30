@@ -6,9 +6,10 @@ from io import BytesIO
 from PIL import Image
 
 from model.exception.unsupported_mime import UnsupportedMime
+from service.i_emote_downloading_service import IEmoteDownloadingService
 
 
-class EmoteDownloadingService:
+class EmoteDownloadingService(IEmoteDownloadingService):
     '''Class responsible for downloading an emote in suitable format.'''
 
     async def download(self, emote_mime: str, emote_content: bytes) -> str:
