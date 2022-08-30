@@ -5,14 +5,15 @@ from config import Config, conf
 from model.exception.emote_fetch_error import EmoteFetchError
 from model.exception.no_emote_results import NoEmoteResults
 from model.reaction.downloaded_emote import DownloadedEmote
-from service.emote_downloading_service import EmoteDownloadingService, emote_downloader
+from service.distributed_emote_downloading_service import emote_downloader
+from service.i_emote_downloading_service import IEmoteDownloadingService
 from service.i_emote_provider_service import IEmoteProviderService
 
 
 class SeventvProviderService(IEmoteProviderService):
     '''Class responsible for getting emotes from 7TV.'''
 
-    def __init__(self, conf: Config, emote_downloader: EmoteDownloadingService) -> None:
+    def __init__(self, conf: Config, emote_downloader: IEmoteDownloadingService) -> None:
         self.config = conf
         self.emote_downloader = emote_downloader
 

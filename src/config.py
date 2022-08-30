@@ -31,5 +31,7 @@ class Config:
         self.database_name = os.environ.get('DATABASE_NAME', '')
         self.database_emote_collection_name = os.environ.get('DATABASE_EMOTE_COLLECTION_NAME', '')
 
+        self.emote_downloader_url = os.environ.get('EMOTE_DOWNLOADER_URL', '')
+
 
 conf = Config()
