@@ -1,6 +1,6 @@
 from model.entity.emote_entity import EmoteEntity
 from model.enum.emote_providers import EmoteProviders
-from model.reaction.cached_emote import CachedEmote
+from model.reaction.online_emote import OnlineEmote
 from model.reaction.emote import Emote
 
 
@@ -14,10 +14,10 @@ class ConvertorService:
 
         return entity
     
-    def emote_entity_to_data(self, entity: EmoteEntity) -> CachedEmote:
+    def emote_entity_to_data(self, entity: EmoteEntity) -> OnlineEmote:
         '''Converts EmoteEntity to CachedEmote.'''
 
-        data = CachedEmote(entity.name, entity.url)
+        data = OnlineEmote(entity.name, entity.url)
 
         return data
 

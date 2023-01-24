@@ -4,7 +4,7 @@ import aiohttp
 from config import Config, conf
 from model.exception.emote_fetch_error import EmoteFetchError
 from model.exception.no_emote_results import NoEmoteResults
-from model.reaction.downloaded_emote import DownloadedEmote
+from model.reaction.online_emote import OnlineEmote
 from service.emote_downloading_service import EmoteDownloadingService, emote_downloader
 from service.i_emote_provider_service import IEmoteProviderService
 
@@ -16,7 +16,7 @@ class BttvProviderService(IEmoteProviderService):
         self.config = conf
         self.emote_downloader = emote_downloader
 
-    async def get_emote(self, query: str, use_raw: bool) -> DownloadedEmote:
+    async def get_emote(self, query: str, use_raw: bool) -> OnlineEmote:
         '''Gets an emote based on query from BTTV.'''
 
         fixed_query = query.split(' ')[1] if use_raw else query
@@ -50,19 +50,15 @@ class BttvProviderService(IEmoteProviderService):
 
                 emote_id = emote['id']
                 emote_name = emote['code']
-                emote_mime = f'image/{emote["imageType"]}'
+                emote_type = emote['imageType']
 
                 logging.info('found a bttv emote')
 
-                cdn_url = f'{self.config.bttv_emote_url}/emote/{emote_id}/3x'
+                cdn_url = f'{self.config.bttv_emote_url}/emote/{emote_id}/3x.{emote_type}'
 
-                async with sess.get(cdn_url) as r:
-                    emote_content = await r.content.read()
+                logging.info(f'emote link seems to be {cdn_url}')
 
-                emote_filename = await self.emote_downloader.download(emote_mime, emote_content)
-                logging.info(f'downloaded {emote_name}')
-
-                return DownloadedEmote(emote_name, emote_filename)
+                return OnlineEmote(emote_name, cdn_url)
 
             except IndexError:
                 logging.warning(f'could not find emote results for query "{query}"')

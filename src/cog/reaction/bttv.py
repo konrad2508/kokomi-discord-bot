@@ -12,7 +12,6 @@ from model.exception.no_emote_results import NoEmoteResults
 from model.exception.not_in_server import NotInServer
 from model.exception.too_large_emote import TooLargeEmote
 from service.api_wrapper_service import APIWrapperService
-from service.database_service import DatabaseService, database_service
 from service.embed_sender_service import EmbedSenderService, embed_sender_service
 from service.emote_service import EmoteService, emote_service
 
@@ -26,12 +25,10 @@ class BttvCog(commands.Cog):
             self,
             aw: Type[APIWrapperService],
             ess: EmbedSenderService,
-            es: EmoteService,
-            ds: DatabaseService) -> None:
+            es: EmoteService) -> None:
         self.api_wrapper = aw
         self.embed_sender_service = ess
         self.emote_service = es
-        self.database_service = ds
 
     @staticmethod
     def checker(func: Callable) -> Callable:
@@ -87,18 +84,10 @@ class BttvCog(commands.Cog):
     async def emote_command(self, ctx: commands.Context, *, query: str = ..., use_raw: bool = ...) -> None:
         '''Body of the command.'''
 
-        possible_emote = await self.database_service.get_emote(query, EmoteProviders.BTTV)
+        emote = await self.emote_service.get_emote(query, EmoteProviders.BTTV, use_raw)
 
-        if possible_emote is not None:
-            await self.embed_sender_service.send_emote(ctx, possible_emote)
-
-        else:
-            emote = await self.emote_service.get_emote(query, EmoteProviders.BTTV, use_raw)
-
-            uploaded_url = await self.embed_sender_service.send_emote(ctx, emote)
-
-            await self.database_service.cache_emote(emote, query, EmoteProviders.BTTV, uploaded_url)
+        await self.embed_sender_service.send_emote(ctx, emote)
 
 
 def setup(bot: commands.Bot) -> None:
-    bot.add_cog(BttvCog(APIWrapperService, embed_sender_service, emote_service, database_service))
+    bot.add_cog(BttvCog(APIWrapperService, embed_sender_service, emote_service))

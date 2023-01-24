@@ -4,7 +4,7 @@ import aiohttp
 from config import Config, conf
 from model.exception.emote_fetch_error import EmoteFetchError
 from model.exception.no_emote_results import NoEmoteResults
-from model.reaction.downloaded_emote import DownloadedEmote
+from model.reaction.online_emote import OnlineEmote
 from service.distributed_emote_downloading_service import emote_downloader
 from service.i_emote_downloading_service import IEmoteDownloadingService
 from service.i_emote_provider_service import IEmoteProviderService
@@ -17,7 +17,7 @@ class SeventvProviderService(IEmoteProviderService):
         self.config = conf
         self.emote_downloader = emote_downloader
 
-    async def get_emote(self, query: str, use_raw: bool) -> DownloadedEmote:
+    async def get_emote(self, query: str, use_raw: bool) -> OnlineEmote:
         '''Gets an emote based on query from 7TV.'''
 
         fixed_query = query.split(' ')[1] if use_raw else query
@@ -26,40 +26,42 @@ class SeventvProviderService(IEmoteProviderService):
 
         query_json = {
             'query': '''
-                query(
+                query SearchEmotes(
                     $query: String!,
                     $page: Int,
-                    $pageSize: Int,
-                    $globalState: String,
-                    $sortBy: String,
-                    $sortOrder: Int,
-                    $channel: String,
-                    $submitted_by: String,
-                    $filter: EmoteFilter) {
-                        search_emotes(
+                    $sort: Sort,
+                    $limit: Int,
+                    $filter: EmoteSearchFilter) {
+                        emotes(
                             query: $query,
-                            limit: $pageSize,
+                            limit: $limit,
                             page: $page,
-                            pageSize: $pageSize,
-                            globalState: $globalState,
-                            sortBy: $sortBy,
-                            sortOrder: $sortOrder,
-                            channel: $channel,
-                            submitted_by: $submitted_by,
-                            filter: $filter) {
-                                id,
-                                visibility,
-                                name,
-                                mime
+                            filter: $filter,
+                            sort: $sort) {
+                                items {
+                                    id
+                                    name
+                                }
                             }
                     }
             ''',
             'variables': {
-                'globalState': 'include',
-                'pageSize': int(self.config.seventv_limit),
+                'limit': int(self.config.seventv_limit),
                 'query': fixed_query,
-                'sortBy': 'popularity',
-                'sortOrder': 0
+                'page': 1,
+                'sort': {
+                    'value': 'popularity',
+                    'order': 'DESCENDING'
+                },
+                'filter': {
+                    'category': 'TOP',
+                    'exact_match': False,
+                    'case_sensitive': False,
+                    'ignore_tags': False,
+                    'zero_width': False,
+                    'animated': False,
+                    'aspect_ratio': ''
+                }
             }
         }
 
@@ -72,7 +74,7 @@ class SeventvProviderService(IEmoteProviderService):
                 emotes = await r.json()
 
             try:
-                all_emotes = emotes['data']['search_emotes']
+                all_emotes = emotes['data']['emotes']['items']
                 exact_match_emotes = [ emote for emote in all_emotes if emote['name'] == fixed_query ]
 
                 if use_raw:
@@ -89,19 +91,17 @@ class SeventvProviderService(IEmoteProviderService):
 
                 emote_id = emote['id']
                 emote_name = emote['name']
-                emote_mime = emote['mime']
 
                 logging.info('found a 7tv emote')
 
                 cdn_url = f'{self.config.seventv_emote_url}/{emote_id}/4x'
 
-                async with sess.get(cdn_url) as r:
-                    emote_content = await r.content.read()
+                async with sess.head(f'{cdn_url}.gif') as r:
+                    cdn_url = f'{cdn_url}.gif' if r.status == 200 else f'{cdn_url}.webp'
 
-                emote_filename = await self.emote_downloader.download(emote_mime, emote_content)
-                logging.info(f'downloaded {emote_name}')
+                logging.info(f'emote link seems to be {cdn_url}')
 
-                return DownloadedEmote(emote_name, emote_filename)
+                return OnlineEmote(emote_name, cdn_url)
 
             except IndexError:
                 logging.warning(f'could not find emote results for query "{query}"')

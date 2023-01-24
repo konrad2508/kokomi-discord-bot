@@ -6,7 +6,7 @@ from nextcord.ext import commands
 from colours import Colours
 from embed_titles import EmbedTitles
 from model.exception.too_large_emote import TooLargeEmote
-from model.reaction.cached_emote import CachedEmote
+from model.reaction.online_emote import OnlineEmote
 from model.reaction.downloaded_emote import DownloadedEmote
 from model.reaction.emote import Emote
 from model.reaction.gif import Gif
@@ -73,7 +73,7 @@ class EmbedSenderService:
                 finally:
                     os.remove(emote.filename)
 
-            case CachedEmote():
+            case OnlineEmote():
                 embed = (nextcord.Embed(colour=nextcord.Colour.from_rgb(*Colours.SUCCESS), title=emote.name)
                         .set_image(url=emote.url))
                 
