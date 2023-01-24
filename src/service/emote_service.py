@@ -1,6 +1,6 @@
 from model.enum.emote_providers import EmoteProviders
 from model.exception.no_provider_exception import NoProviderException
-from model.reaction.downloaded_emote import DownloadedEmote
+from model.reaction.online_emote import OnlineEmote
 from service.i_emote_provider_service import IEmoteProviderService
 from service.bttv_provider_service import bttv_provider
 from service.seventv_provider_service import seventv_provider
@@ -12,7 +12,7 @@ class EmoteService:
     def __init__(self, providers: dict[EmoteProviders, IEmoteProviderService]) -> None:
         self.providers = providers
 
-    async def get_emote(self, query: str, provider: EmoteProviders, use_raw: bool) -> DownloadedEmote:
+    async def get_emote(self, query: str, provider: EmoteProviders, use_raw: bool) -> OnlineEmote:
         '''Gets an emote from provider based on query.'''
 
         try:
