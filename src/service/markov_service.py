@@ -11,7 +11,7 @@ class MarkovService:
     def __init__(self) -> None:
         self.grammars: dict[int, MarkovGrammar] = {}
         self.sentence_starts: dict[int, list[str]] = {}
-        self.gram_n = 3
+        self.gram_n = 2
         self.max_message_length = 500
 
     async def learn(self, channel: TextChannel) -> bool:
@@ -90,7 +90,7 @@ class MarkovService:
                 generated_message = f'{" ".join(generated_message.split(" ")[:1 - self.gram_n])} {output}'
         
         finally:
-            return (starting, generated_message)
+            return generated_message
     
     def _normalize_input(self, input: str) -> str:
         input = re.sub(r'[^a-zA-Z0-9\s]', ' ', input)
