@@ -63,7 +63,7 @@ class LearnCog(commands.Cog):
 
         await self.markov_service.learn(channel)
 
-        await self.embed_sender_service.send_success(ctx, channel)
+        await self.embed_sender_service.send_success(ctx, 'OK')
 
 
 def setup(bot: commands.Bot) -> None:

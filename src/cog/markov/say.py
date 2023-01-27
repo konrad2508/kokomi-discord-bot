@@ -61,9 +61,8 @@ class SayCog(commands.Cog):
     async def say_command(self, ctx: commands.Context, *, channel: Union[TextChannel, str] = ...) -> None:
         '''Body of the command.'''
 
-        start, msg = await self.markov_service.say(channel)
+        msg = await self.markov_service.say(channel)
 
-        await self.embed_sender_service.send_success(ctx, start)
         await self.embed_sender_service.send_success(ctx, msg)
 
 
