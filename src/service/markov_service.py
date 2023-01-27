@@ -27,10 +27,10 @@ class MarkovService:
 
         # 1. filter messages - command invokations, hyperlinks, mentions etc
         # 1.1 remove hyperlinks
-        messages_content = [ re.sub(r'(?:https?|ftp)\:\/\/.*?(?:$|\s)', '', msg)    for msg in messages_content ]
+        messages_content = [ re.sub(r'(?:https?|ftp)\:\/\/.*?(?:$|\s)', '', msg)      for msg in messages_content ]
 
         # 1.2 remove command invokations, mentions, tags etc
-        messages_content = [ re.sub(r'(?:^|\s)[!@#$%^&*\-\+=\?\/\.\,][^\s]+', '', msg) for msg in messages_content ]
+        messages_content = [ re.sub(r'(?:^|\s)[!<$%^&*\-\+=\?\/\.\,][^\s]+', '', msg) for msg in messages_content ]
         
         # 2. tokenize messages
         tokenized_messages = [ [ m for m in msg.split(' ') if m != '' ] for msg in messages_content ]
