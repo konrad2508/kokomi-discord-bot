@@ -1,3 +1,4 @@
+from nextcord import Intents
 from nextcord.ext import commands
 
 from config import Config
@@ -11,7 +12,10 @@ class StandardDiscordBotFactory(IDiscordBotFactory):
         self.cfg = cfg
     
     def get_bot(self) -> commands.Bot:
-        bot = commands.Bot(command_prefix=self.cfg.prefix, help_command=None)
+        intents = Intents.default()
+        intents.message_content = True
+
+        bot = commands.Bot(command_prefix=self.cfg.prefix, help_command=None, intents=intents)
 
         for extension in self._get_extensions():
             bot.load_extension(extension)
@@ -31,7 +35,9 @@ class StandardDiscordBotFactory(IDiscordBotFactory):
             'cog.music.purge',
             'cog.reaction.gif',
             'cog.reaction.7tv',
-            'cog.reaction.bttv'
+            'cog.reaction.bttv',
+            'cog.markov.learn',
+            'cog.markov.say'
         ]
 
         return extensions
