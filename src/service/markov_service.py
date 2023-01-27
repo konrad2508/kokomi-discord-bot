@@ -18,7 +18,7 @@ class MarkovService:
         '''Learns the model for a specified channel. Returns bool value indicating success or failure.'''
 
         # messages = [msg async for msg in channel.history(oldest_first=False, after=Object(1067950472264175636))]
-        messages = [msg async for msg in channel.history(oldest_first=False)]
+        messages = [msg async for msg in channel.history(oldest_first=False, limit=None)]
 
         messages_content = [msg.content for msg in messages]
 
