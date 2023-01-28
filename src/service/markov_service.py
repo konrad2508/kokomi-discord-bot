@@ -72,7 +72,8 @@ class MarkovService:
         for n in ngrams:
             splitted_first_ngram = n[0].split(' ')
 
-            self.sentence_starts[channel.id].add(' '.join(splitted_first_ngram[:-1])) # TODO: normalize sentence_starts >safely<
+            normalized_sentence_start = self._normalize_input(' '.join(splitted_first_ngram[:-1]))
+            self.sentence_starts[channel.id].add(normalized_sentence_start)
         
         # 5. verify
         # self.grammars[channel.id].print_matrixes()
@@ -109,7 +110,23 @@ class MarkovService:
     
     def _normalize_input(self, input: str) -> str:
         input = input.lower()
-        input = re.sub(r'[^a-zA-Z0-9\s]', ' ', input)
+
+        conversion_dict = {
+            'ą': 'a',
+            'ć': 'c',
+            'ę': 'e',
+            'ł': 'l',
+            'ń': 'n',
+            'ó': 'o',
+            'ś': 's',
+            'ź': 'z',
+            'ż': 'z'
+        }
+
+        for k, v in conversion_dict.items():
+            input = re.sub(rf'{k}', v, input)
+
+        input = re.sub(r'[^a-zA-Z0-9\s]', '@', input)
 
         return input
 
