@@ -1,13 +1,17 @@
 import random
 import re
+
 from nextcord import TextChannel, Object
 
 from model.exception.channel_not_learned import ChannelNotLearned
+from model.exception.no_new_messages import NoNewMessages
+from model.exception.not_enough_data import NotEnoughData
 from model.markov.markov_grammar import MarkovGrammar
 
 
 class MarkovService:
-    '''Class responsible for operating the Markov Chain model.'''
+    '''Class responsible for operating the Markov chain model.'''
+
     def __init__(self) -> None:
         self.grammars: dict[int, MarkovGrammar] = {}
         self.sentence_starts: dict[int, list[str]] = {}
@@ -15,7 +19,7 @@ class MarkovService:
         self.gram_n = 2
         self.max_message_length = 500
 
-    async def learn(self, channel: TextChannel) -> bool:
+    async def learn(self, channel: TextChannel) -> int:
         '''Learns the model for a specified channel. Returns bool value indicating success or failure.'''
 
         if channel.id in self.newest_message:
@@ -23,9 +27,9 @@ class MarkovService:
         
         else:
             messages = [ msg async for msg in channel.history(oldest_first=False, limit=None) ]
-        
+
         if len(messages) == 0:
-            raise Exception
+            raise NoNewMessages
 
         messages_content = [ msg.content for msg in messages ]
 
@@ -73,10 +77,15 @@ class MarkovService:
         # 5. verify
         # self.grammars[channel.id].print_matrixes()
         # print(self.sentence_starts[channel.id])
+
+        return len(messages_content)
     
     async def say(self, channel: TextChannel) -> str:
         if channel.id not in self.grammars:
             raise ChannelNotLearned
+
+        if len(self.sentence_starts[channel.id]) == 0:
+            raise NotEnoughData
 
         # choose a starting ngram
         starting = random.choice(self.sentence_starts[channel.id])
