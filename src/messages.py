@@ -32,6 +32,10 @@ class Messages:
     CANNOT_ADD_PLAYLIST = 'Could not add the playlist to the queue'
     PURGED_QUEUE = 'The queue has been emptied'
     QUERY_TOO_LONG = 'The query is too long (must be 256 or fewer in length)'
+    MARKOV_BAD_ARGUMENT = 'Specified argument is not a valid (or visible) text channel'
+    MARKOV_NO_NEW_MESSAGES = 'No messages available for learning in the specified channel'
+    MARKOV_CHANNEL_NOT_LEARNED = 'The bot must learn from the specified channel first'
+    MARKOV_NOT_ENOUGH_DATA = 'The bot has not gained enough knowledge from the channel to be able to generate a message'
 
 
     @staticmethod
@@ -83,6 +87,10 @@ class Messages:
     @staticmethod
     def NO_EMOTES_FOUND(query: str) -> str:
         return f'Could not find an emote for "{query}"'
+    
+    @staticmethod
+    def FINISHED_LEARNING(number_of_messages: int) -> str:
+        return f'Finished learning from {number_of_messages} message(s)'
 
     @staticmethod
     def HELP(prefix: str) -> list[tuple[str, str]]:

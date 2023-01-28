@@ -2,12 +2,13 @@ from functools import wraps
 from typing import Callable, Type, Union
 
 from nextcord import TextChannel
-from nextcord.abc import GuildChannel
-# from nextcord.abc import GuildChannel
 from nextcord.ext import commands
 
 from messages import Messages
+from model.exception.bad_argument import BadArgument
+from model.exception.channel_not_learned import ChannelNotLearned
 from model.exception.missing_argument import MissingArgument
+from model.exception.not_enough_data import NotEnoughData
 from model.exception.not_in_server import NotInServer
 from service.api_wrapper_service import APIWrapperService
 from service.embed_sender_service import EmbedSenderService, embed_sender_service
@@ -15,8 +16,8 @@ from service.markov_service import MarkovService, markov_service
 
 
 class SayCog(commands.Cog):
-    '''Class representing the learn command. This starts the learning process on the specified channel,
-    or updates the model on new messages.'''
+    '''Class representing the say command. This generates a message based on previous messages sent on the specified
+    channel, and sends it.'''
 
     def __init__(
             self,
@@ -29,9 +30,9 @@ class SayCog(commands.Cog):
 
     @staticmethod
     def checker(func: Callable) -> Callable:
-        '''Decorator checking whether the learn command can be run.
+        '''Decorator checking whether the say command can be run.
         
-        The command can be run if invoked in the server, and the user has privileges to do so.'''
+        The command can be run if invoked in the server, the user provided a correct argument, .'''
 
         @wraps(func)
         async def decorator(self: 'SayCog', ctx: commands.Context, *, channel: Union[TextChannel, str]):
@@ -44,7 +45,7 @@ class SayCog(commands.Cog):
                     raise MissingArgument
                 
                 if type(channel) is not TextChannel:
-                    raise Exception
+                    raise BadArgument
 
                 await func(self, ctx, channel=channel)
 
@@ -53,6 +54,15 @@ class SayCog(commands.Cog):
 
             except MissingArgument:
                 await self.embed_sender_service.send_error(ctx, Messages.MISSING_ARGUMENTS)
+            
+            except BadArgument:
+                await self.embed_sender_service.send_error(ctx, Messages.MARKOV_BAD_ARGUMENT)
+            
+            except ChannelNotLearned:
+                await self.embed_sender_service.send_error(ctx, Messages.MARKOV_CHANNEL_NOT_LEARNED)
+                
+            except NotEnoughData:
+                await self.embed_sender_service.send_error(ctx, Messages.MARKOV_NOT_ENOUGH_DATA)
 
         return decorator
 

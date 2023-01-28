@@ -2,12 +2,12 @@ from functools import wraps
 from typing import Callable, Type, Union
 
 from nextcord import TextChannel
-from nextcord.abc import GuildChannel
-# from nextcord.abc import GuildChannel
 from nextcord.ext import commands
 
 from messages import Messages
+from model.exception.bad_argument import BadArgument
 from model.exception.missing_argument import MissingArgument
+from model.exception.no_new_messages import NoNewMessages
 from model.exception.not_in_server import NotInServer
 from service.api_wrapper_service import APIWrapperService
 from service.embed_sender_service import EmbedSenderService, embed_sender_service
@@ -31,7 +31,8 @@ class LearnCog(commands.Cog):
     def checker(func: Callable) -> Callable:
         '''Decorator checking whether the learn command can be run.
         
-        The command can be run if invoked in the server, and the user has privileges to do so.'''
+        The command can be run if invoked in the server, the user provided a correct argument, and there are messages
+        the bot can learn from.'''
 
         @wraps(func)
         async def decorator(self: 'LearnCog', ctx: commands.Context, *, channel: Union[TextChannel, str]):
@@ -44,7 +45,7 @@ class LearnCog(commands.Cog):
                     raise MissingArgument
                 
                 if type(channel) is not TextChannel:
-                    raise Exception
+                    raise BadArgument
 
                 await func(self, ctx, channel=channel)
 
@@ -53,6 +54,12 @@ class LearnCog(commands.Cog):
 
             except MissingArgument:
                 await self.embed_sender_service.send_error(ctx, Messages.MISSING_ARGUMENTS)
+            
+            except BadArgument:
+                await self.embed_sender_service.send_error(ctx, Messages.MARKOV_BAD_ARGUMENT)
+        
+            except NoNewMessages:
+                await self.embed_sender_service.send_error(ctx, Messages.MARKOV_NO_NEW_MESSAGES)
 
         return decorator
 
@@ -61,9 +68,9 @@ class LearnCog(commands.Cog):
     async def learn_command(self, ctx: commands.Context, *, channel: Union[TextChannel, str] = ...) -> None:
         '''Body of the command.'''
 
-        await self.markov_service.learn(channel)
+        number_of_messages = await self.markov_service.learn(channel)
 
-        await self.embed_sender_service.send_success(ctx, 'OK')
+        await self.embed_sender_service.send_success(ctx, Messages.FINISHED_LEARNING(number_of_messages))
 
 
 def setup(bot: commands.Bot) -> None:
