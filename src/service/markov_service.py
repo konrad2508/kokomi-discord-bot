@@ -11,19 +11,25 @@ class MarkovService:
     def __init__(self) -> None:
         self.grammars: dict[int, MarkovGrammar] = {}
         self.sentence_starts: dict[int, list[str]] = {}
+        self.newest_message: dict[int, int] = {}
         self.gram_n = 2
         self.max_message_length = 500
 
     async def learn(self, channel: TextChannel) -> bool:
         '''Learns the model for a specified channel. Returns bool value indicating success or failure.'''
 
-        # messages = [msg async for msg in channel.history(oldest_first=False, after=Object(1067950472264175636))]
-        messages = [msg async for msg in channel.history(oldest_first=False, limit=None)]
+        if channel.id in self.newest_message:
+            messages = [ msg async for msg in channel.history(oldest_first=False, limit=None, after=Object(self.newest_message[channel.id])) ]
+        
+        else:
+            messages = [ msg async for msg in channel.history(oldest_first=False, limit=None) ]
+        
+        if len(messages) == 0:
+            raise Exception
 
-        messages_content = [msg.content for msg in messages]
+        messages_content = [ msg.content for msg in messages ]
 
-        # print(messages_content)
-        # print([msg.id for msg in messages])
+        self.newest_message[channel.id] = messages[0].id
 
         # 1. filter messages - command invokations, hyperlinks, mentions etc
         # 1.1 remove hyperlinks
