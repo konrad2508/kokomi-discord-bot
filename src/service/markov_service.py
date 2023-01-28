@@ -14,7 +14,7 @@ class MarkovService:
 
     def __init__(self) -> None:
         self.grammars: dict[int, MarkovGrammar] = {}
-        self.sentence_starts: dict[int, list[str]] = {}
+        self.sentence_starts: dict[int, set[str]] = {}
         self.newest_message: dict[int, int] = {}
         self.gram_n = 2
         self.max_message_length = 500
@@ -53,7 +53,7 @@ class MarkovService:
         # 3. create and save grammar
         if channel.id not in self.grammars:
             self.grammars[channel.id] = MarkovGrammar()
-            self.sentence_starts[channel.id] = []
+            self.sentence_starts[channel.id] = set()
         
         for n in ngrams:
             for m in n:
@@ -72,7 +72,7 @@ class MarkovService:
         for n in ngrams:
             splitted_first_ngram = n[0].split(' ')
 
-            self.sentence_starts[channel.id].append(' '.join(splitted_first_ngram[:-1]))
+            self.sentence_starts[channel.id].add(' '.join(splitted_first_ngram[:-1])) # TODO: normalize sentence_starts >safely<
         
         # 5. verify
         # self.grammars[channel.id].print_matrixes()
@@ -88,7 +88,7 @@ class MarkovService:
             raise NotEnoughData
 
         # choose a starting ngram
-        starting = random.choice(self.sentence_starts[channel.id])
+        starting = random.choice(tuple(self.sentence_starts[channel.id]))
 
         # generate a poem
         generated_message = starting
@@ -108,6 +108,7 @@ class MarkovService:
             return generated_message
     
     def _normalize_input(self, input: str) -> str:
+        input = input.lower()
         input = re.sub(r'[^a-zA-Z0-9\s]', ' ', input)
 
         return input
