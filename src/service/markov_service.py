@@ -1,7 +1,8 @@
+import datetime
 import random
 import re
 
-from nextcord import TextChannel, Object
+from nextcord import TextChannel, Object, Message
 
 from model.exception.channel_not_learned import ChannelNotLearned
 from model.exception.no_new_messages import NoNewMessages
@@ -31,25 +32,20 @@ class MarkovService:
         if len(messages) == 0:
             raise NoNewMessages
 
-        messages_content = [ msg.content for msg in messages ]
-
+        # 0. merge messages from the same person occuring after each other in a short period of time
+        messages_content = self._merge_messages(messages)
+        
         self.newest_message[channel.id] = messages[0].id
 
         # 1. filter messages - command invokations, hyperlinks, mentions etc
-        # 1.1 remove hyperlinks
-        messages_content = [ re.sub(r'(?:https?|ftp)\:\/\/.*?(?:$|\s)', '', msg)      for msg in messages_content ]
+        filtered_messages = self._filter_messages(messages_content)
 
-        # 1.2 remove command invokations, mentions, tags etc
-        messages_content = [ re.sub(r'(?:^|\s)[!<$%^&*\-\+=\?\/\.\,][^\s]+', '', msg) for msg in messages_content ]
-        
         # 2. tokenize messages
-        tokenized_messages = [ [ m for m in msg.split(' ') if m != '' ] for msg in messages_content ]
-        
+        tokenized_messages = [ [ m for m in msg.split(' ') if m != '' ] for msg in filtered_messages ]
+
         # 2.1. generate n-grams
-        ngrams = [ zip(*[ tokenized[i:] for i in range(self.gram_n) ]) for tokenized in tokenized_messages ]
-        ngrams = [ [' '.join(ng) for ng in ngram] for ngram in ngrams ]
-        ngrams = [ ngram for ngram in ngrams if len(ngram) != 0 ]
-        
+        ngrams = self._generate_ngrams(tokenized_messages)
+
         # 3. create and save grammar
         if channel.id not in self.grammars:
             self.grammars[channel.id] = MarkovGrammar()
@@ -61,15 +57,18 @@ class MarkovService:
 
                 input = ' '.join(splitted[:-1])
                 
-                # normalize input
                 input = self._normalize_input(input)
-
                 output = m
 
                 self.grammars[channel.id] += [input, output]
 
-        # 4. save sentence start
-        for n in ngrams:
+        # 4. save sentence start - use original, unmerged messages
+        messages_original_content = [ msg.content for msg in messages ]
+        filtered_original_messages = self._filter_messages(messages_original_content)
+        tokenized_original_messages = [ [ m for m in msg.split(' ') if m != '' ] for msg in filtered_original_messages ]
+        original_ngrams = self._generate_ngrams(tokenized_original_messages)
+
+        for n in original_ngrams:
             splitted_first_ngram = n[0].split(' ')
 
             normalized_sentence_start = self._normalize_input(' '.join(splitted_first_ngram[:-1]))
@@ -79,7 +78,7 @@ class MarkovService:
         # self.grammars[channel.id].print_matrixes()
         # print(self.sentence_starts[channel.id])
 
-        return len(messages_content)
+        return len(messages)
     
     async def say(self, channel: TextChannel) -> str:
         if channel.id not in self.grammars:
@@ -98,9 +97,7 @@ class MarkovService:
             while len(generated_message) < self.max_message_length:
                 input = ' '.join(generated_message.split(' ')[1 - self.gram_n:])
                 
-                # normalize input
                 input = self._normalize_input(input)
-                
                 output = self.grammars[channel.id][input]
 
                 generated_message = f'{" ".join(generated_message.split(" ")[:1 - self.gram_n])} {output}'
@@ -108,6 +105,46 @@ class MarkovService:
         finally:
             return generated_message
     
+    def _merge_messages(self, messages: list[Message]) -> list[str]:
+        messages_content = []
+        last_message = messages[-1]
+        message_content = messages[-1].content
+
+        for msg in messages[-2::-1]:
+            # check if same author and created at the same time
+            if msg.author != last_message.author or msg.created_at - last_message.created_at > datetime.timedelta(minutes=5):
+                messages_content.append(message_content)
+
+                last_message = msg
+                message_content = msg.content
+
+                continue
+            
+            # else merge messages
+            message_content = f'{message_content} {msg.content}'
+        
+        messages_content.append(message_content)
+
+        return messages_content
+
+    def _filter_messages(self, messages: list[str]) -> list[str]:
+        # remove hyperlinks
+        messages = [ re.sub(r'(?:https?|ftp)\:\/\/.*?(?:$|\s)', '', msg)      for msg in messages ]
+
+        # remove command invokations, mentions, tags etc
+        messages = [ re.sub(r'(?:^|\s)[!<$%^&*\-\+=\?\/\.\,][^\s]+', '', msg) for msg in messages ]
+
+        return messages
+
+
+    def _generate_ngrams(self, tokenized_messages: list[list[str]]) -> list[list[str]]:
+        ngrams = [ zip(*[ tokenized[i:] for i in range(self.gram_n) ]) for tokenized in tokenized_messages ]
+        ngrams = [ [' '.join(ng) for ng in ngram] for ngram in ngrams ]
+        ngrams = [ ngram for ngram in ngrams if len(ngram) != 0 ]
+
+        return ngrams
+
+
     def _normalize_input(self, input: str) -> str:
         input = input.lower()
 
