@@ -1,5 +1,6 @@
 from nextcord import VoiceChannel
 from nextcord.ext import commands
+from model.exception.in_server import InServer
 
 from model.exception.not_in_server import NotInServer
 from model.exception.not_in_voice_chat import NotInVoiceChat
@@ -18,12 +19,23 @@ class APIWrapperService:
         if not self.ctx.message.guild:
             raise NotInServer
 
+    def check_if_author_not_in_server(self) -> None:
+        '''Checks if the author's message is not in a server. Throws InServer exception if it is.'''
+
+        if self.ctx.message.guild:
+            raise InServer
+
     def check_if_author_in_vc(self) -> None:
         '''Checks if the message's author is in a voice channel. Throws NotInVoiceChat exception
         if is not.'''
 
         if not self.ctx.message.author.voice:
             raise NotInVoiceChat
+
+    def get_author_id(self) -> int:
+        '''Returns the ID of the message's author.'''
+
+        return self.ctx.message.author.id
 
     def get_server_id(self) -> int:
         '''Returns the ID of a server.'''

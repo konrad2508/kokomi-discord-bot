@@ -37,7 +37,13 @@ class StandardDiscordBotFactory(IDiscordBotFactory):
             'cog.reaction.7tv',
             'cog.reaction.bttv',
             'cog.markov.learn',
-            'cog.markov.say'
+            'cog.markov.say',
+            'cog.user.ban',
+            'cog.user.unban',
+            'cog.user.listbans',
+            'cog.user.authorize',
+            'cog.user.unauthorize',
+            'cog.user.listauthorized'
         ]
 
         return extensions

@@ -1,4 +1,5 @@
 from model.entity.emote_entity import EmoteEntity
+from model.entity.user_entity import UserEntity
 from model.enum.emote_providers import EmoteProviders
 from model.reaction.online_emote import OnlineEmote
 from model.reaction.emote import Emote
@@ -20,5 +21,12 @@ class ConvertorService:
         data = OnlineEmote(entity.name, entity.url)
 
         return data
+    
+    def user_data_to_entity(self, id: int) -> UserEntity:
+        '''Converts User to UserEntity.'''
+
+        entity = UserEntity(id)
+
+        return entity
 
 convertor_service = ConvertorService()

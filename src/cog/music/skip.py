@@ -4,6 +4,7 @@ from typing import Callable, Type
 from nextcord.ext import commands
 
 from messages import Messages
+from model.exception.banned import Banned
 from model.exception.music_queue_locked import MusicQueueLocked
 from model.exception.no_song_playing import NoSongPlaying
 from model.exception.not_in_server import NotInServer
@@ -11,6 +12,7 @@ from model.exception.not_yet_connected import NotYetConnected
 from service.api_wrapper_service import APIWrapperService
 from service.embed_sender_service import EmbedSenderService, embed_sender_service
 from service.music_player_service import MusicPlayerService, music_player_service
+from service.user_management_service import UserManagementService, user_management_service
 
 
 class SkipCog(commands.Cog):
@@ -20,9 +22,11 @@ class SkipCog(commands.Cog):
             self,
             aw: Type[APIWrapperService],
             ess: EmbedSenderService,
+            ums: UserManagementService,
             mps: MusicPlayerService) -> None:
         self.api_wrapper = aw
         self.embed_sender_service = ess
+        self.user_management_service = ums
         self.music_player_service = mps
 
     @staticmethod
@@ -37,12 +41,17 @@ class SkipCog(commands.Cog):
             api = self.api_wrapper(ctx)
 
             try:
+                await self.user_management_service.check_if_not_banned(api.get_author_id())
+
                 api.check_if_author_in_server()
                 self.music_player_service.check_if_connected(api.get_server_id())
                 self.music_player_service.check_if_queue_not_locked(api.get_server_id())
                 self.music_player_service.check_if_song_playing(api.get_server_id())
 
                 await func(self, ctx, api)
+
+            except Banned:
+                pass
 
             except NotInServer:
                 await self.embed_sender_service.send_error(ctx, Messages.AUTHOR_NOT_IN_SERVER)
@@ -70,4 +79,4 @@ class SkipCog(commands.Cog):
         await self.embed_sender_service.send_success(ctx, Messages.SKIPPED_SONG)
 
 def setup(bot: commands.Bot) -> None:
-    bot.add_cog(SkipCog(APIWrapperService, embed_sender_service, music_player_service))
+    bot.add_cog(SkipCog(APIWrapperService, embed_sender_service, user_management_service, music_player_service))

@@ -4,6 +4,7 @@ from typing import Callable, Type
 from nextcord.ext import commands
 
 from messages import Messages
+from model.exception.banned import Banned
 from model.exception.gif_fetch_error import GifFetchError
 from model.exception.missing_argument import MissingArgument
 from model.exception.no_gif_results import NoGifResults
@@ -12,6 +13,7 @@ from model.exception.query_too_long import QueryTooLong
 from service.api_wrapper_service import APIWrapperService
 from service.embed_sender_service import EmbedSenderService, embed_sender_service
 from service.gif_service import GifService, gif_service
+from service.user_management_service import UserManagementService, user_management_service
 
 
 class GifCog(commands.Cog):
@@ -21,9 +23,11 @@ class GifCog(commands.Cog):
             self,
             aw: Type[APIWrapperService],
             ess: EmbedSenderService,
+            ums: UserManagementService,
             gs: GifService) -> None:
         self.api_wrapper = aw
         self.embed_sender_service = ess
+        self.user_management_service = ums
         self.gif_service = gs
 
     @staticmethod
@@ -38,6 +42,8 @@ class GifCog(commands.Cog):
             api = self.api_wrapper(ctx)
 
             try:
+                await self.user_management_service.check_if_not_banned(api.get_author_id())
+
                 api.check_if_author_in_server()
 
                 if query is ...:
@@ -47,6 +53,9 @@ class GifCog(commands.Cog):
                     raise QueryTooLong
 
                 await func(self, ctx, query=query, api=api)
+
+            except Banned:
+                pass
 
             except NotInServer:
                 await self.embed_sender_service.send_error(ctx, Messages.AUTHOR_NOT_IN_SERVER)
@@ -76,4 +85,4 @@ class GifCog(commands.Cog):
 
 
 def setup(bot: commands.Bot) -> None:
-    bot.add_cog(GifCog(APIWrapperService, embed_sender_service, gif_service))
+    bot.add_cog(GifCog(APIWrapperService, embed_sender_service, user_management_service, gif_service))

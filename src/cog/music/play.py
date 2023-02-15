@@ -4,6 +4,7 @@ from typing import Callable, Type
 from nextcord.ext import commands
 
 from messages import Messages
+from model.exception.banned import Banned
 from model.exception.cannot_add_playlist import CannotAddPlaylist
 from model.exception.invalid_option import InvalidOption
 from model.exception.missing_argument import MissingArgument
@@ -17,6 +18,7 @@ from model.exception.unsupported_source import UnsupportedSource
 from service.api_wrapper_service import APIWrapperService
 from service.embed_sender_service import EmbedSenderService, embed_sender_service
 from service.music_player_service import MusicPlayerService, music_player_service
+from service.user_management_service import UserManagementService, user_management_service
 
 
 class PlayCog(commands.Cog):
@@ -27,10 +29,12 @@ class PlayCog(commands.Cog):
             self,
             aw: Type[APIWrapperService],
             ess: EmbedSenderService,
+            ums: UserManagementService,
             mps: MusicPlayerService,
             bot: commands.Bot) -> None:
         self.api_wrapper = aw
         self.embed_sender_service = ess
+        self.user_management_service = ums
         self.music_player_service = mps
         self.bot = bot
 
@@ -46,6 +50,8 @@ class PlayCog(commands.Cog):
             api = self.api_wrapper(ctx)
 
             try:
+                await self.user_management_service.check_if_not_banned(api.get_author_id())
+
                 api.check_if_author_in_server()
                 self.music_player_service.check_if_connected(api.get_server_id())
                 self.music_player_service.check_if_queue_not_locked(api.get_server_id())
@@ -64,6 +70,9 @@ class PlayCog(commands.Cog):
                 use_playlist = splitted_query[0] == opts['use_playlist']
 
                 await func(self, ctx, text=text, api=api, use_playlist=use_playlist)
+
+            except Banned:
+                pass
 
             except NotInServer:
                 await self.embed_sender_service.send_error(ctx, Messages.AUTHOR_NOT_IN_SERVER)
@@ -113,4 +122,4 @@ class PlayCog(commands.Cog):
         )
 
 def setup(bot: commands.Bot) -> None:
-    bot.add_cog(PlayCog(APIWrapperService, embed_sender_service, music_player_service, bot))
+    bot.add_cog(PlayCog(APIWrapperService, embed_sender_service, user_management_service, music_player_service, bot))
