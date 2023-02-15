@@ -8,6 +8,7 @@ class Messages:
     '''Class containing messages sent in various types of embeds.'''
 
     AUTHOR_NOT_IN_SERVER = 'Command unavailable through DM'
+    AUTHOR_IN_SERVER = 'Command available through DM'
     AUTHOR_NOT_IN_VOICE_CHAT = 'You must be in a voice channel'
     BOT_ALREADY_IN_VOICE_CHAT = 'Bot is already in a voice channel'
     BOT_NOT_IN_VOICE_CHAT = 'Bot is not in a voice channel'
@@ -36,6 +37,16 @@ class Messages:
     MARKOV_NO_NEW_MESSAGES = 'No messages available for learning in the specified channel'
     MARKOV_CHANNEL_NOT_LEARNED = 'The bot must learn from the specified channel first'
     MARKOV_NOT_ENOUGH_DATA = 'The bot has not gained enough knowledge from the channel to be able to generate a message'
+    USER_NOT_BANNABLE = 'User cannot be banned'
+    USER_NOT_BANNED = 'Specified user is not banned'
+    USER_BANNED = 'Specified user is already banned'
+    USER_NOT_AUTHORIZED = 'Specified user is not authorized'
+    USER_AUTHORIZED = 'Specified user is already authorized'
+    MISSING_USER_ID = 'Provide ID of the user'
+    USER_SUCCESSFULLY_UNBANNED = 'Successfully unbanned the user'
+    USER_SUCCESSFULLY_UNAUTHORIZED = 'Successfully unauthorized the user'
+    USER_SUCCESSFULLY_BANNED = 'Successfully banned the user'
+    USER_SUCCESSFULLY_AUTHORIZED = 'Successfully authorized the user'
 
 
     @staticmethod
@@ -91,6 +102,22 @@ class Messages:
     @staticmethod
     def FINISHED_LEARNING(number_of_messages: int) -> str:
         return f'Finished learning from {number_of_messages} message(s)'
+
+    @staticmethod
+    def LIST_BANNED_USERS(banned_users: list[int]) -> str:
+        if len(banned_users) == 0:
+            return 'No banned users'
+
+        else:
+            return ', '.join(map(str, banned_users))
+
+    @staticmethod
+    def LIST_AUTHORIZED_USERS(authorized_users: list[int]) -> str:
+        if len(authorized_users) == 0:
+            return 'No authorized users'
+
+        else:
+            return ', '.join(map(str, authorized_users))
 
     @staticmethod
     def HELP(prefix: str) -> list[tuple[str, str]]:

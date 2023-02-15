@@ -11,6 +11,7 @@ class Config:
 
         self.token = os.environ.get('BOT_TOKEN', '')
         self.prefix = os.environ.get('BOT_PREFIX', '')
+        self.owner = int(os.environ.get('BOT_OWNER', '0'))
         
         self.tenor_base_url = os.environ.get('TENOR_BASE_URL', '')
         self.tenor_token = os.environ.get('TENOR_TOKEN', '')
@@ -30,6 +31,8 @@ class Config:
         self.database_connection_string = os.environ.get('DATABASE_CONNECTION_STRING', '')
         self.database_name = os.environ.get('DATABASE_NAME', '')
         self.database_emote_collection_name = os.environ.get('DATABASE_EMOTE_COLLECTION_NAME', '')
+        self.database_banned_user_collection_name = os.environ.get('DATABASE_BANNED_USER_COLLECTION_NAME', '')
+        self.database_authorized_user_collection_name = os.environ.get('DATABASE_AUTHORIZED_USER_COLLECTION_NAME', '')
 
         self.emote_downloader_url = os.environ.get('EMOTE_DOWNLOADER_URL', '')
 

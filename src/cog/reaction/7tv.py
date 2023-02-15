@@ -5,6 +5,7 @@ from nextcord.ext import commands
 
 from messages import Messages
 from model.enum.emote_providers import EmoteProviders
+from model.exception.banned import Banned
 from model.exception.emote_fetch_error import EmoteFetchError
 from model.exception.invalid_option import InvalidOption
 from model.exception.missing_argument import MissingArgument
@@ -14,6 +15,7 @@ from model.exception.too_large_emote import TooLargeEmote
 from service.api_wrapper_service import APIWrapperService
 from service.embed_sender_service import EmbedSenderService, embed_sender_service
 from service.emote_service import EmoteService, emote_service
+from service.user_management_service import UserManagementService, user_management_service
 
 
 class SeventvCog(commands.Cog):
@@ -25,9 +27,11 @@ class SeventvCog(commands.Cog):
             self,
             aw: Type[APIWrapperService],
             ess: EmbedSenderService,
+            ums: UserManagementService,
             es: EmoteService) -> None:
         self.api_wrapper = aw
         self.embed_sender_service = ess
+        self.user_management_service = ums
         self.emote_service = es
 
     @staticmethod
@@ -42,6 +46,8 @@ class SeventvCog(commands.Cog):
             api = self.api_wrapper(ctx)
 
             try:
+                await self.user_management_service.check_if_not_banned(api.get_author_id())
+
                 api.check_if_author_in_server()
 
                 if query is ...:
@@ -58,6 +64,9 @@ class SeventvCog(commands.Cog):
                 use_raw = splitted_query[0] == opts['use_raw']
 
                 await func(self, ctx, query=query, use_raw=use_raw)
+
+            except Banned:
+                pass
 
             except NotInServer:
                 await self.embed_sender_service.send_error(ctx, Messages.AUTHOR_NOT_IN_SERVER)
@@ -90,4 +99,4 @@ class SeventvCog(commands.Cog):
 
 
 def setup(bot: commands.Bot) -> None:
-    bot.add_cog(SeventvCog(APIWrapperService, embed_sender_service, emote_service))
+    bot.add_cog(SeventvCog(APIWrapperService, embed_sender_service, user_management_service, emote_service))
