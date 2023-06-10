@@ -19,14 +19,16 @@ RUN virtualenv --system-site-packages /vpy3
 RUN /vpy3/bin/pip install --no-cache-dir --upgrade pip
 RUN /vpy3/bin/pip install --no-cache-dir -r requirements.txt
 
-# Copy application
+# Create app folder
 WORKDIR /app
+
+# Create app user
+RUN useradd -m -U -u 1000 appuser && chown -R appuser:appuser /app /vpy3
+
+# Copy application
 COPY . /app
 
-# Create user
-RUN useradd -m -U -u 1000 appuser && chown -R appuser:appuser /app /vpy3
-USER appuser
-
 # Start the application
+USER appuser
 WORKDIR /app/src
 CMD ["/vpy3/bin/python", "app.py"]
