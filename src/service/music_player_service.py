@@ -40,13 +40,13 @@ class MusicPlayerService:
         '''Checks if the music queue of a server is not locked. Throws MusicQueueLocked exception
         if it is.'''
 
-        if self.voice_channels[id] and self.voice_channels[id].is_queue_locked:
+        if id in self.voice_channels and self.voice_channels[id].is_queue_locked:
             raise MusicQueueLocked
 
     def check_if_song_playing(self, id: int) -> None:
         '''Checks if the bot is playing a song. Throws NoSongPlaying if it is not.'''
 
-        if self.voice_channels[id] and self.voice_channels[id].currently_playing is None:
+        if id in self.voice_channels and self.voice_channels[id].currently_playing is None:
             raise NoSongPlaying
 
     async def connect(self, id: int, channel: VoiceChannel) -> None:
