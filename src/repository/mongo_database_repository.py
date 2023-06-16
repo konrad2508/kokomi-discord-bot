@@ -19,6 +19,8 @@ class MongoDatabaseRepository(IDatabaseRepository):
         self.authorized_user_collection = database[config.database_authorized_user_collection_name]
 
     async def get_emote(self, query: str, provider: EmoteProviders) -> EmoteEntity | None:
+        '''Returns the emote from the specified provider from the database.'''
+
         emote = self.emote_collection.find_one({'query': query, 'provider': provider.encode()})
 
         if emote is None:
@@ -29,6 +31,8 @@ class MongoDatabaseRepository(IDatabaseRepository):
         return emote
 
     async def save_emote(self, emote: EmoteEntity) -> EmoteEntity:
+        '''Saves the emote in the database. Returns the saved emote.'''
+
         self.emote_collection.insert_one(emote.to_dict())
 
         return emote
