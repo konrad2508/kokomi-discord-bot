@@ -3,6 +3,7 @@ from typing import Callable, Type
 
 from nextcord.ext import commands
 
+from composer import embed_sender_service, emote_service, user_management_service
 from messages import Messages
 from model.enum.emote_providers import EmoteProviders
 from model.exception.banned import Banned
@@ -13,9 +14,9 @@ from model.exception.no_emote_results import NoEmoteResults
 from model.exception.not_in_server import NotInServer
 from model.exception.too_large_emote import TooLargeEmote
 from service.api_wrapper_service import APIWrapperService
-from service.embed_sender_service import EmbedSenderService, embed_sender_service
-from service.emote_service import EmoteService, emote_service
-from service.user_management_service import UserManagementService, user_management_service
+from service.embed_sender_service import EmbedSenderService
+from service.emote_service import EmoteService
+from service.user_management_service import UserManagementService
 
 
 class SeventvCog(commands.Cog):

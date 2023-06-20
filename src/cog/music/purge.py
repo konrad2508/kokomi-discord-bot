@@ -3,6 +3,7 @@ from typing import Callable, Type
 
 from nextcord.ext import commands
 
+from composer import embed_sender_service, music_player_service, user_management_service
 from messages import Messages
 from model.exception.banned import Banned
 from model.exception.music_queue_locked import MusicQueueLocked
@@ -10,9 +11,9 @@ from model.exception.no_song_playing import NoSongPlaying
 from model.exception.not_in_server import NotInServer
 from model.exception.not_yet_connected import NotYetConnected
 from service.api_wrapper_service import APIWrapperService
-from service.embed_sender_service import EmbedSenderService, embed_sender_service
-from service.music_player_service import MusicPlayerService, music_player_service
-from service.user_management_service import UserManagementService, user_management_service
+from service.embed_sender_service import EmbedSenderService
+from service.music_player_service import MusicPlayerService
+from service.user_management_service import UserManagementService
 
 
 class PurgeCog(commands.Cog):

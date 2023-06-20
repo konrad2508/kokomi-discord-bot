@@ -2,7 +2,7 @@ import logging
 import random
 import aiohttp
 
-from config import Config, conf
+from config import Config
 from model.exception.gif_fetch_error import GifFetchError
 from model.exception.no_gif_results import NoGifResults
 from model.reaction.gif import Gif
@@ -45,6 +45,3 @@ class GifService:
         except IndexError:
             logging.warning(f'could not find gif results for query "{query}"')
             raise NoGifResults
-
-
-gif_service = GifService(conf)

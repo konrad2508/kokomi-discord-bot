@@ -3,6 +3,7 @@ from typing import Callable, Type
 
 from nextcord.ext import commands
 
+from composer import embed_sender_service, music_player_service, user_management_service
 from messages import Messages
 from model.exception.banned import Banned
 from model.exception.cannot_add_playlist import CannotAddPlaylist
@@ -16,9 +17,9 @@ from model.exception.playlist_source_not_supported import PlaylistSourceNotSuppo
 from model.exception.song_is_playlist import SongIsPlaylist
 from model.exception.unsupported_source import UnsupportedSource
 from service.api_wrapper_service import APIWrapperService
-from service.embed_sender_service import EmbedSenderService, embed_sender_service
-from service.music_player_service import MusicPlayerService, music_player_service
-from service.user_management_service import UserManagementService, user_management_service
+from service.embed_sender_service import EmbedSenderService
+from service.music_player_service import MusicPlayerService
+from service.user_management_service import UserManagementService
 
 
 class PlayCog(commands.Cog):

@@ -3,6 +3,7 @@ from typing import Callable, Type
 
 from nextcord.ext import commands
 
+from composer import embed_sender_service, gif_service, user_management_service
 from messages import Messages
 from model.exception.banned import Banned
 from model.exception.gif_fetch_error import GifFetchError
@@ -11,9 +12,9 @@ from model.exception.no_gif_results import NoGifResults
 from model.exception.not_in_server import NotInServer
 from model.exception.query_too_long import QueryTooLong
 from service.api_wrapper_service import APIWrapperService
-from service.embed_sender_service import EmbedSenderService, embed_sender_service
-from service.gif_service import GifService, gif_service
-from service.user_management_service import UserManagementService, user_management_service
+from service.embed_sender_service import EmbedSenderService
+from service.gif_service import GifService
+from service.user_management_service import UserManagementService
 
 
 class GifCog(commands.Cog):

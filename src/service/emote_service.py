@@ -2,8 +2,6 @@ from model.enum.emote_providers import EmoteProviders
 from model.exception.no_provider_exception import NoProviderException
 from model.reaction.online_emote import OnlineEmote
 from service.i_emote_provider_service import IEmoteProviderService
-from service.bttv_provider_service import bttv_provider
-from service.seventv_provider_service import seventv_provider
 
 
 class EmoteService:
@@ -24,9 +22,3 @@ class EmoteService:
         gif = await provider_service.get_emote(query, use_raw)
 
         return gif
-
-
-emote_service = EmoteService({
-    EmoteProviders.SEVENTV: seventv_provider,
-    EmoteProviders.BTTV: bttv_provider
-})

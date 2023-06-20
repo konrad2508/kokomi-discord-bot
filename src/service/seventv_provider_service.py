@@ -1,11 +1,10 @@
 import logging
 import aiohttp
 
-from config import Config, conf
+from config import Config
 from model.exception.emote_fetch_error import EmoteFetchError
 from model.exception.no_emote_results import NoEmoteResults
 from model.reaction.online_emote import OnlineEmote
-from service.distributed_emote_downloading_service import emote_downloader
 from service.i_emote_downloading_service import IEmoteDownloadingService
 from service.i_emote_provider_service import IEmoteProviderService
 
@@ -106,6 +105,3 @@ class SeventvProviderService(IEmoteProviderService):
             except IndexError:
                 logging.warning(f'could not find emote results for query "{query}"')
                 raise NoEmoteResults
-
-
-seventv_provider = SeventvProviderService(conf, emote_downloader)

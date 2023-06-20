@@ -5,7 +5,7 @@ from io import BytesIO
 
 from PIL import Image
 
-from config import Config, conf
+from config import Config
 from model.exception.emote_fetch_error import EmoteFetchError
 from model.exception.unsupported_mime import UnsupportedMime
 from service.i_emote_downloading_service import IEmoteDownloadingService
@@ -107,6 +107,3 @@ class DistributedEmoteDownloadingService(IEmoteDownloadingService):
                 raise UnsupportedMime
 
         return emote_filename
-
-
-emote_downloader = DistributedEmoteDownloadingService(conf)

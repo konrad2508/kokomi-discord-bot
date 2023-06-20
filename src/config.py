@@ -35,6 +35,3 @@ class Config:
         self.database_authorized_user_collection_name = os.environ.get('DATABASE_AUTHORIZED_USER_COLLECTION_NAME', '')
 
         self.emote_downloader_url = os.environ.get('EMOTE_DOWNLOADER_URL', '')
-
-
-conf = Config()

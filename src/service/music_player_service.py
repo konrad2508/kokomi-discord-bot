@@ -12,7 +12,7 @@ from model.exception.not_yet_connected import NotYetConnected
 from model.music.currently_playing import CurrentlyPlaying
 from model.music.duration import Duration
 from model.music.vc import VC
-from service.song_service import SongService, song_service
+from service.song_service import SongService
 
 
 class MusicPlayerService:
@@ -206,6 +206,3 @@ class MusicPlayerService:
             server.currently_playing_song = None
             server.currently_playing = None
             await on_end()
-
-
-music_player_service = MusicPlayerService(song_service)
