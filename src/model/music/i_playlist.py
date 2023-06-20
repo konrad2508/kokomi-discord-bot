@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from typing import Type
-from audio_source.i_pcm_source import IPCMSource
 
+from audio_source.i_pcm_source import IPCMSource
 from model.music.song import Song
 
 

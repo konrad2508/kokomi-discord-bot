@@ -66,6 +66,3 @@ class EmoteDownloadingService(IEmoteDownloadingService):
                 raise UnsupportedMime
 
         return emote_filename
-
-
-emote_downloader = EmoteDownloadingService()

@@ -1,8 +1,7 @@
 from model.enum.emote_providers import EmoteProviders
 from model.reaction.emote import Emote
 from repository.i_database_repository import IDatabaseRepository
-from repository.mongo_database_repository import mongo_database_repository
-from service.convertor_service import ConvertorService, convertor_service
+from service.convertor_service import ConvertorService
 
 
 class DatabaseService:
@@ -74,6 +73,3 @@ class DatabaseService:
         authorized_users = [ user.id for user in authorized_users ]
 
         return authorized_users
-
-
-database_service = DatabaseService(mongo_database_repository, convertor_service)

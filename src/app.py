@@ -1,6 +1,6 @@
 import logging
 
-from config import conf
+from composer import conf
 from factory.standard_discord_bot_factory import StandardDiscordBotFactory
 from runner.standard_discord_bot_runner import StandardDiscordBotRunner
 

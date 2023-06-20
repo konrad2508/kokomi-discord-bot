@@ -43,6 +43,3 @@ class SongService:
         songs = playlist.songs
 
         return songs
-
-
-song_service = SongService()

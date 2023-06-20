@@ -83,6 +83,3 @@ class EmbedSenderService:
 
             case _:
                 raise RuntimeError('emote should not be of type Emote, should be derived')
-
-
-embed_sender_service = EmbedSenderService()

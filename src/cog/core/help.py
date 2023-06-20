@@ -5,10 +5,11 @@ from nextcord.ext import commands
 from messages import Messages
 from model.exception.banned import Banned
 
+from composer import embed_sender_service, user_management_service
 from model.exception.not_in_server import NotInServer
 from service.api_wrapper_service import APIWrapperService
-from service.embed_sender_service import EmbedSenderService, embed_sender_service
-from service.user_management_service import UserManagementService, user_management_service
+from service.embed_sender_service import EmbedSenderService
+from service.user_management_service import UserManagementService
 
 
 class HelpCog(commands.Cog):

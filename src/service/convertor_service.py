@@ -28,5 +28,3 @@ class ConvertorService:
         entity = UserEntity(id)
 
         return entity
-
-convertor_service = ConvertorService()

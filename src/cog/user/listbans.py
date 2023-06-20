@@ -2,13 +2,14 @@ from functools import wraps
 from typing import Callable, Type
 
 from nextcord.ext import commands
+
+from composer import embed_sender_service, user_management_service
 from messages import Messages
 from model.exception.in_server import InServer
 from model.exception.not_authorized import NotAuthorized
-
 from service.api_wrapper_service import APIWrapperService
-from service.embed_sender_service import EmbedSenderService, embed_sender_service
-from service.user_management_service import UserManagementService, user_management_service
+from service.embed_sender_service import EmbedSenderService
+from service.user_management_service import UserManagementService
 
 
 class ListbansCog(commands.Cog):

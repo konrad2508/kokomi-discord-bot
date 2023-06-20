@@ -1,4 +1,4 @@
-from config import Config, conf
+from config import Config
 from model.exception.banned import Banned
 from model.exception.not_authorized import NotAuthorized
 from model.exception.not_bannable import NotBannable
@@ -7,7 +7,7 @@ from model.exception.user_authorized import UserAuthorized
 from model.exception.user_banned import UserBanned
 from model.exception.user_not_authorized import UserNotAuthorized
 from model.exception.user_not_banned import UserNotBanned
-from service.database_service import DatabaseService, database_service
+from service.database_service import DatabaseService
 
 
 class UserManagementService:
@@ -112,6 +112,3 @@ class UserManagementService:
 
         if user not in authorized_users:
             raise UserNotAuthorized
-
-
-user_management_service = UserManagementService(conf, database_service)

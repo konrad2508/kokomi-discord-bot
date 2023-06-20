@@ -166,6 +166,3 @@ class MarkovService:
         input = re.sub(r'[^a-zA-Z0-9\s]', '@', input)
 
         return input
-
-
-markov_service = MarkovService()

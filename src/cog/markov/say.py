@@ -4,6 +4,7 @@ from typing import Callable, Type, Union
 from nextcord import TextChannel
 from nextcord.ext import commands
 
+from composer import embed_sender_service, markov_service, user_management_service
 from messages import Messages
 from model.exception.bad_argument import BadArgument
 from model.exception.banned import Banned
@@ -12,9 +13,9 @@ from model.exception.missing_argument import MissingArgument
 from model.exception.not_enough_data import NotEnoughData
 from model.exception.not_in_server import NotInServer
 from service.api_wrapper_service import APIWrapperService
-from service.embed_sender_service import EmbedSenderService, embed_sender_service
-from service.markov_service import MarkovService, markov_service
-from service.user_management_service import UserManagementService, user_management_service
+from service.embed_sender_service import EmbedSenderService
+from service.markov_service import MarkovService
+from service.user_management_service import UserManagementService
 
 
 class SayCog(commands.Cog):

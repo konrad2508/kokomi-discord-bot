@@ -1,6 +1,6 @@
 import pymongo
 
-from config import Config, conf
+from config import Config
 from model.entity.emote_entity import EmoteEntity
 from model.entity.user_entity import UserEntity
 from model.enum.emote_providers import EmoteProviders
@@ -81,6 +81,3 @@ class MongoDatabaseRepository(IDatabaseRepository):
         authorized_users = list(map(UserEntity.from_dict, authorized_users))
 
         return authorized_users
-
-
-mongo_database_repository = MongoDatabaseRepository(conf)
