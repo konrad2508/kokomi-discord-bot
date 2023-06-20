@@ -1,5 +1,7 @@
 import os
 
+from dotenv import dotenv_values, find_dotenv
+
 from audio_source.spotipy_pcm_source import SpotipyPCMSource
 from utils.test_utils import TestCase, tested_module
 
@@ -57,6 +59,7 @@ class SpotipyPCMSourceIntegrationTestCase(TestCase):
     def setUp(self) -> None:
         self.super_from_search_mock = self.patch('YtdlpPCMSource.from_search')
         self.patch('logging')
+        self.patch_dict(os.environ, dotenv_values(find_dotenv()))
 
     def tearDown(self) -> None:
         super().tearDown()
