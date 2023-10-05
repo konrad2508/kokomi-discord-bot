@@ -95,7 +95,7 @@ class SeventvProviderService(IEmoteProviderService):
 
                 cdn_url = f'{self.config.seventv_emote_url}/{emote_id}/4x'
 
-                async with sess.head(f'{cdn_url}.gif') as r:
+                async with sess.get(f'{cdn_url}.gif') as r:
                     cdn_url = f'{cdn_url}.gif' if r.status == 200 else f'{cdn_url}.webp'
 
                 logging.info(f'emote link seems to be {cdn_url}')
