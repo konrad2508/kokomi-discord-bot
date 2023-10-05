@@ -2,8 +2,8 @@ nextcord==2.4.1
 pynacl==1.5.0
 https://github.com/yt-dlp/yt-dlp/archive/master.tar.gz
 python-dotenv==0.19.2
-Pillow==9.0.1
+Pillow==10.0.1
 pymongo==4.0.2
 dnspython==2.2.1
 youtube-search-python==1.6.2
-spotipy==2.19.0
+spotipy==2.23.0
