@@ -1,6 +1,7 @@
 import logging
 
 import nextcord
+import nextcord.opus
 
 from config import Config
 from factory.i_discord_bot_factory import IDiscordBotFactory
@@ -23,4 +24,10 @@ class StandardDiscordBotRunner(IDiscordBotRunner):
 
             await self.bot.change_presence(activity=nextcord.Game(name=f'{self.bot.command_prefix}help'))
 
+        if not nextcord.opus.is_loaded():
+            try:
+                nextcord.opus.load_opus('libopus.so.0')
+            except Exception as e:
+                logging.warning(f"Could not load Opus library: {e}")
+        
         self.bot.run(self.cfg.token, reconnect=True)

@@ -1,5 +1,5 @@
 # Use archlinux base image
-FROM archlinux
+FROM python:3.12-alpine
 
 # Keeps Python from generating .pyc files in the container
 ENV PYTHONDONTWRITEBYTECODE=1
@@ -7,30 +7,19 @@ ENV PYTHONDONTWRITEBYTECODE=1
 # Turns off buffering for easier container logging
 ENV PYTHONUNBUFFERED=1
 
-# Update keys
-RUN pacman --noconfirm -Sy archlinux-keyring
-RUN pacman-key --init
-RUN pacman-key --populate archlinux
-
 # Install packages
-RUN pacman --noconfirm -Syu
-RUN pacman --noconfirm -S python python-virtualenv ffmpeg imagemagick gcc
+RUN apk add --no-cache ffmpeg imagemagick gcc musl-dev opus
 
-# Clear cache
-RUN find /var/cache/pacman/ -type f -delete
-
-# Install pip requirements to virtualenv
+# Install pip requirements
 COPY requirements.txt .
-
-RUN virtualenv --system-site-packages /vpy3
-RUN /vpy3/bin/pip install --no-cache-dir --upgrade pip
-RUN /vpy3/bin/pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir --upgrade pip
+RUN pip install --no-cache-dir --break-system-packages -r requirements.txt
 
 # Create app folder
 WORKDIR /app
 
 # Create app user
-RUN useradd -m -U -u 1000 appuser && chown -R appuser:appuser /app /vpy3
+RUN adduser -D -u 1000 appuser && chown -R appuser:appuser /app
 
 # Copy application
 COPY . /app
@@ -38,4 +27,4 @@ COPY . /app
 # Start the application
 USER appuser
 WORKDIR /app/src
-CMD ["/vpy3/bin/python", "app.py"]
+CMD ["python", "app.py"]
