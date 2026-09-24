@@ -9,6 +9,10 @@ class Config:
     def __init__(self) -> None:
         load_dotenv(find_dotenv())
 
+        self.run_webserver = os.environ.get('RUN_WEBSERVER', '').lower() in ('1', 'true')
+        self.webserver_url = os.environ.get('WEBSERVER_URL', '')
+        self.webserver_port = int(os.environ.get('WEBSERVER_PORT', '0'))
+
         self.token = os.environ.get('BOT_TOKEN', '')
         self.prefix = os.environ.get('BOT_PREFIX', '')
         self.owner = int(os.environ.get('BOT_OWNER', '0'))
