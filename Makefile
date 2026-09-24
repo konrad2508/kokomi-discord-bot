@@ -12,4 +12,4 @@ run: build
 	$(DOCKERRUN) $(IMAGETAG)
 
 unittest: build
-	$(DOCKERRUN) $(IMAGETAG) /vpy3/bin/python -m unittest discover -s ../test
+	$(DOCKERRUN) $(IMAGETAG) python -m unittest discover -s ../test
