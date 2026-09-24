@@ -15,6 +15,3 @@ Simply building a Docker image using ```Dockerfile``` and running a container sh
 
 ### Alternative way: running the Python script
 Kokomi can also be run by launching the ```app.py``` script in ```src``` directory. You must have a working ffmpeg and imagemagick installation, as well as Python requirements specified in ```requirements.txt```.
-
-## Hosting
-Since Kokomi can be used with Docker, hosting is not a problem, as long as appropriate environmental variables are set. ```heroku.yaml``` file is provided if your desired hosting service is Heroku.
