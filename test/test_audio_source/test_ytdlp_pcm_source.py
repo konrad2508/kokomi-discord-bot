@@ -122,9 +122,9 @@ class YtdlpPCMSourceIntegrationTestCase(TestCase):
     async def test_from_search_correctly_gets_normal_song_from_youtube(self) -> None:
         obj = await YtdlpPCMSource.from_search('https://www.youtube.com/watch?v=dQw4w9WgXcQ')
 
-        self.assertEqual(obj.title, 'Rick Astley - Never Gonna Give You Up (Official Music Video)')
+        self.assertEqual(obj.title, 'Rick Astley - Never Gonna Give You Up (Official Video) (4K Remaster)')
         self.assertEqual(obj.url, 'https://www.youtube.com/watch?v=dQw4w9WgXcQ')
-        self.assertEqual(obj.duration, 212)
+        self.assertEqual(obj.duration, 213)
 
     async def test_from_search_correctly_gets_playlist_song_from_youtube(self) -> None:
         obj = await YtdlpPCMSource.from_search('https://www.youtube.com/watch?v=q6EoRBvdVPQ&list=PLFsQleAWXsj_4yDeebiIADdH5FMayBiJo&index=1')
@@ -136,9 +136,9 @@ class YtdlpPCMSourceIntegrationTestCase(TestCase):
     async def test_from_search_correctly_gets_shortened_url_song_from_youtube(self) -> None:
         obj = await YtdlpPCMSource.from_search('https://youtu.be/dQw4w9WgXcQ')
 
-        self.assertEqual(obj.title, 'Rick Astley - Never Gonna Give You Up (Official Music Video)')
+        self.assertEqual(obj.title, 'Rick Astley - Never Gonna Give You Up (Official Video) (4K Remaster)')
         self.assertEqual(obj.url, 'https://www.youtube.com/watch?v=dQw4w9WgXcQ')
-        self.assertEqual(obj.duration, 212)
+        self.assertEqual(obj.duration, 213)
 
     async def test_from_search_correctly_gets_song_from_soundcloud(self) -> None:
         obj = await YtdlpPCMSource.from_search('https://soundcloud.com/deathgrips/death-grips-exmilitary-2')
@@ -150,6 +150,6 @@ class YtdlpPCMSourceIntegrationTestCase(TestCase):
     async def test_from_search_correctly_finds_song_from_youtube_based_on_query(self) -> None:
         obj = await YtdlpPCMSource.from_search('never gonna give you up')
 
-        self.assertEqual(obj.title, 'Rick Astley - Never Gonna Give You Up (Official Music Video)')
+        self.assertEqual(obj.title, 'Rick Astley - Never Gonna Give You Up (Official Video) (4K Remaster)')
         self.assertEqual(obj.url, 'https://www.youtube.com/watch?v=dQw4w9WgXcQ')
-        self.assertEqual(obj.duration, 212)
+        self.assertEqual(obj.duration, 213)
