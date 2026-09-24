@@ -1,7 +1,6 @@
 import logging
 
 import nextcord
-import nextcord.opus
 
 from config import Config
 from factory.i_discord_bot_factory import IDiscordBotFactory
@@ -28,6 +27,6 @@ class StandardDiscordBotRunner(IDiscordBotRunner):
             try:
                 nextcord.opus.load_opus('libopus.so.0')
             except Exception as e:
-                logging.warning(f"Could not load Opus library: {e}")
+                logging.warning(f'could not load opus: {e}')
         
         self.bot.run(self.cfg.token, reconnect=True)
