@@ -24,8 +24,7 @@ class YtdlpPCMSource(IPCMSource):
         'logtostderr': False,
         'quiet': True,
         'no_warnings': True,
-        'default_search': 'auto',
-        'source_address': '0.0.0.0'
+        'default_search': 'auto'
     }
 
     _FFMPEG_OPTIONS = {
@@ -44,7 +43,7 @@ class YtdlpPCMSource(IPCMSource):
         self._data = data
 
     @classmethod
-    async def from_search(cls: Type[YtdlpPCMSource], url: str) -> YtdlpPCMSource:
+    async def from_search(cls: Type[YtdlpPCMSource], url: str, cookies: str = '') -> YtdlpPCMSource:
         '''Performs a yt-dlp search for a song, based on search argument. Returns an instance representing the found song.
 
         In case of a url, represents the song behind that link. In case of a query,
@@ -53,7 +52,12 @@ class YtdlpPCMSource(IPCMSource):
         logging.info(f'fetching info for {url}')
 
         try:
-            ytdl = yt_dlp.YoutubeDL(cls._YTDL_FORMAT_OPTIONS)
+            ytdl_opts = cls._YTDL_FORMAT_OPTIONS
+
+            if cookies != '':
+                ytdl_opts['cookiefile'] = cookies
+
+            ytdl = yt_dlp.YoutubeDL(ytdl_opts)
             data: dict = ytdl.extract_info(url, download=False)
 
         except yt_dlp.utils.DownloadError as e:
