@@ -15,6 +15,7 @@ from model.exception.not_yet_connected import NotYetConnected
 from model.exception.playlist_is_song import PlaylistIsSong
 from model.exception.playlist_source_not_supported import PlaylistSourceNotSupported
 from model.exception.song_is_playlist import SongIsPlaylist
+from model.exception.source_authorization_error import SourceAuthorizationError
 from model.exception.unsupported_source import UnsupportedSource
 from service.api_wrapper_service import APIWrapperService
 from service.embed_sender_service import EmbedSenderService
@@ -101,6 +102,9 @@ class PlayCog(commands.Cog):
             
             except CannotAddPlaylist:
                 await self.embed_sender_service.send_error(ctx, Messages.CANNOT_ADD_PLAYLIST)
+
+            except SourceAuthorizationError:
+                await self.embed_sender_service.send_error(ctx, Messages.SOURCE_AUTHORIZATION_ERROR)
 
         return decorator
 

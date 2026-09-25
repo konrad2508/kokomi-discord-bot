@@ -26,6 +26,7 @@ class Messages:
     ERROR_FETCHING_EMOTES = 'There was an error fetching an emote'
     EMOTE_TOO_LARGE = 'Requested emote is too large'
     UNSUPPORTED_SONG_SOURCE = 'Could not play the song from the specified website'
+    SOURCE_AUTHORIZATION_ERROR = 'The specified website is unsupported as it requires authorization'
     INVALID_OPTION = 'Passed an invalid option to the command'
     SONG_IS_PLAYLIST = 'Specified link leads to a playlist'
     PLAYLIST_IS_SONG = 'Specified link leads to a song'

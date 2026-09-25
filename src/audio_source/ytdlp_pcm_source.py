@@ -7,6 +7,7 @@ import yt_dlp
 from nextcord import FFmpegPCMAudio, AudioSource
 
 from audio_source.i_pcm_source import IPCMSource
+from model.exception.source_authorization_error import SourceAuthorizationError
 from model.exception.unsupported_source import UnsupportedSource
 
 
@@ -55,8 +56,12 @@ class YtdlpPCMSource(IPCMSource):
             ytdl = yt_dlp.YoutubeDL(cls._YTDL_FORMAT_OPTIONS)
             data: dict = ytdl.extract_info(url, download=False)
 
-        except yt_dlp.utils.DownloadError:
-            raise UnsupportedSource
+        except yt_dlp.utils.DownloadError as e:
+            if "Sign in to confirm you're not a bot." in str(e):
+                raise SourceAuthorizationError
+
+            else:
+                raise UnsupportedSource
 
         logging.info(f'found info for {url}')
 
