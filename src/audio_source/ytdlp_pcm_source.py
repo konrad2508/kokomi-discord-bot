@@ -57,6 +57,8 @@ class YtdlpPCMSource(IPCMSource):
             data: dict = ytdl.extract_info(url, download=False)
 
         except yt_dlp.utils.DownloadError as e:
+            logging.error(e)
+
             if "Sign in to confirm you're not a bot." in str(e):
                 raise SourceAuthorizationError
 
