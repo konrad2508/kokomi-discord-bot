@@ -18,6 +18,8 @@ class SongService:
     '''Class responsible for returning a song object as an adequate class.'''
 
     def __init__(self, conf: Config) -> None:
+        self.youtube_cookies = None
+
         if not conf.youtube_cookies_base64:
             logging.error('no youtube cookies present')
 
@@ -39,7 +41,11 @@ class SongService:
 
         song_source = YtdlpPCMSource
 
-        song = await Song.from_search(song_source, source, self.youtube_cookies)
+        if self.youtube_cookies is not None:
+            song = await Song.from_search(song_source, source, self.youtube_cookies)
+
+        else:
+            song = await Song.from_search(song_source, source)
 
         return song
     

@@ -14,7 +14,7 @@ class Song:
         self.url = url
 
     @classmethod
-    async def from_search(cls, song_type: Type[IPCMSource], source: str, cookie_file: str) -> Song:
+    async def from_search(cls, song_type: Type[IPCMSource], source: str, cookie_file: str = '') -> Song:
         '''Creates an instance of Song by fetching song's info from the Internet.'''
 
         instance = await song_type.from_search(source, cookie_file)
