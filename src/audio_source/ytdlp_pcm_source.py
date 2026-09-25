@@ -22,7 +22,7 @@ class YtdlpPCMSource(IPCMSource):
         'nocheckcertificate': True,
         'ignoreerrors': False,
         'logtostderr': False,
-        'quiet': True,
+        'quiet': False,
         'no_warnings': True,
         'default_search': 'auto'
     }
@@ -56,7 +56,7 @@ class YtdlpPCMSource(IPCMSource):
 
             if cookies != '':
                 logging.info(f'using cookies at {cookies}')
-                ytdl_opts['cookies'] = cookies
+                ytdl_opts['cookiefile'] = cookies
 
             ytdl = yt_dlp.YoutubeDL(ytdl_opts)
             data: dict = ytdl.extract_info(url, download=False)
