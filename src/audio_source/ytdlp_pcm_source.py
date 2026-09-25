@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 import logging
 from typing import Type
 
@@ -61,7 +62,13 @@ class YtdlpPCMSource(IPCMSource):
 
             if cookies != '':
                 ytdl_opts['cookiefile'] = cookies
-                logging.info(ytdl_opts)
+
+                logging.info(f'file exists: {os.path.exists(cookies)}')
+                if os.path.exists(cookies):
+                    logging.info(f'file size: {os.path.getsize(cookies)}')
+                    with open(cookies, 'r') as f:
+                        logging.info(f'first line: {repr(f.readline())}')
+
 
             ytdl = yt_dlp.YoutubeDL(ytdl_opts)
             data: dict = ytdl.extract_info(url, download=False)
