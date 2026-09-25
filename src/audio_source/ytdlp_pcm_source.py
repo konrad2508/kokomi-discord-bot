@@ -55,7 +55,8 @@ class YtdlpPCMSource(IPCMSource):
             ytdl_opts = cls._YTDL_FORMAT_OPTIONS
 
             if cookies != '':
-                ytdl_opts['cookiefile'] = cookies
+                logging.info(f'using cookies at {cookies}')
+                ytdl_opts['cookies'] = cookies
 
             ytdl = yt_dlp.YoutubeDL(ytdl_opts)
             data: dict = ytdl.extract_info(url, download=False)
