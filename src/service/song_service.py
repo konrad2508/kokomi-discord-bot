@@ -3,7 +3,6 @@ from __future__ import annotations
 import logging
 import re
 
-from audio_source.spotipy_pcm_source import SpotipyPCMSource
 from audio_source.ytdlp_pcm_source import YtdlpPCMSource
 from model.exception.playlist_is_song import PlaylistIsSong
 from model.exception.playlist_source_not_supported import PlaylistSourceNotSupported
@@ -21,10 +20,7 @@ class SongService:
         if re.match(r'^.*youtube\.com\/playlist', source) is not None:
             raise SongIsPlaylist
 
-        if re.match(r'^.*open\.spotify\.com', source) is not None:
-            song_source = SpotipyPCMSource
-        else:
-            song_source = YtdlpPCMSource
+        song_source = YtdlpPCMSource
 
         song = await Song.from_search(song_source, source)
 
