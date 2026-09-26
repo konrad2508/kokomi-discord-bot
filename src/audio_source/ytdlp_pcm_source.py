@@ -22,8 +22,7 @@ class YtdlpPCMSource(IPCMSource):
         'nocheckcertificate': True,
         'ignoreerrors': False,
         'logtostderr': False,
-        'quiet': False,
-        'verbose': True,
+        'quiet': True,
         'no_warnings': True,
         'default_search': 'auto',
         'remote_components': ['ejs:github']
