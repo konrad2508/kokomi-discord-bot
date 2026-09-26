@@ -23,7 +23,7 @@ class SongService:
 
         if re.match(r'^.*youtube\.com\/watch\?v=', source):
             v_id = source.split('watch?v=')[1]
-            source = f'https://www.youtube.com/embed/{v_id}'
+            source = f'https://invidious.tiekoetter.com/watch?v={v_id}'
 
         song_source = YtdlpPCMSource
 
