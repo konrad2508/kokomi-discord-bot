@@ -26,6 +26,7 @@ class YtdlpPCMSource(IPCMSource):
         'verbose': True,
         'no_warnings': True,
         'default_search': 'auto',
+        'remote_components': ['ejs:github']
     }
 
     _FFMPEG_OPTIONS = {

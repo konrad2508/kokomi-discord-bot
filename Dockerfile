@@ -8,7 +8,7 @@ ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
 # Install packages
-RUN apk add --no-cache ffmpeg imagemagick gcc musl-dev opus
+RUN apk add --no-cache ffmpeg imagemagick gcc musl-dev opus deno
 
 # Install pip requirements
 COPY requirements.txt .
