@@ -8,7 +8,7 @@ ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
 # Install packages
-RUN apk add --no-cache ffmpeg imagemagick gcc musl-dev opus nodejs npm git pkgconfig
+RUN apk add --no-cache ffmpeg imagemagick gcc musl-dev opus
 
 # Install pip requirements
 COPY requirements.txt .
@@ -20,16 +20,6 @@ WORKDIR /app
 
 # Create app user
 RUN adduser -D -u 1000 appuser && chown -R appuser:appuser /app
-
-# Install pot provider
-RUN apk add pixman-dev
-RUN apk add cairo-dev
-RUN apk add pango-dev
-RUN apk add build-base
-RUN git clone --single-branch --branch 2.0.0 https://github.com/Brainicism/bgutil-ytdlp-pot-provider.git /app/pot
-WORKDIR /app/pot/server
-RUN npm ci
-RUN npx tsc
 
 # Copy application
 COPY . /app

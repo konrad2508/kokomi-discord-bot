@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import os
 import logging
 from typing import Type
 
@@ -23,20 +22,9 @@ class YtdlpPCMSource(IPCMSource):
         'nocheckcertificate': True,
         'ignoreerrors': False,
         'logtostderr': False,
-        'quiet': False,
-        'verbose': True,
+        'quiet': True,
         'no_warnings': True,
         'default_search': 'auto',
-        'force_ipv4': True,
-        'extractor_args': {
-            'youtube': {
-                'player_client': ['mweb']
-            }
-        },
-        'js_runtimes': {
-            'node': { }
-        },
-        'remote_components': ['ejs:github']
     }
 
     _FFMPEG_OPTIONS = {
@@ -55,7 +43,7 @@ class YtdlpPCMSource(IPCMSource):
         self._data = data
 
     @classmethod
-    async def from_search(cls: Type[YtdlpPCMSource], url: str, cookies: str = '') -> YtdlpPCMSource:
+    async def from_search(cls: Type[YtdlpPCMSource], url: str) -> YtdlpPCMSource:
         '''Performs a yt-dlp search for a song, based on search argument. Returns an instance representing the found song.
 
         In case of a url, represents the song behind that link. In case of a query,
@@ -64,19 +52,7 @@ class YtdlpPCMSource(IPCMSource):
         logging.info(f'fetching info for {url}')
 
         try:
-            ytdl_opts = cls._YTDL_FORMAT_OPTIONS
-
-            if cookies != '':
-                ytdl_opts['cookiefile'] = cookies
-
-                logging.info(f'file exists: {os.path.exists(cookies)}')
-                if os.path.exists(cookies):
-                    logging.info(f'file size: {os.path.getsize(cookies)}')
-                    with open(cookies, 'r') as f:
-                        logging.info(f'first line: {repr(f.readline())}')
-
-
-            ytdl = yt_dlp.YoutubeDL(ytdl_opts)
+            ytdl = yt_dlp.YoutubeDL(cls._YTDL_FORMAT_OPTIONS)
             data: dict = ytdl.extract_info(url, download=False)
 
         except yt_dlp.utils.DownloadError as e:
@@ -93,9 +69,4 @@ class YtdlpPCMSource(IPCMSource):
 
         filename = data['url']
 
-        ffmpeg_options = cls._FFMPEG_OPTIONS
-        headers = ''.join(f'{k}: {v}\r\n' for k, v in data.get('http_headers', {}).items())
-        user_agent = data.get('http_headers', {}).get('User-Agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)')
-        ffmpeg_options['before_options'] = f'{ffmpeg_options['before_options']} -headers "{headers}" -user_agent "{user_agent}"'
-
-        return cls(FFmpegPCMAudio(filename, **ffmpeg_options), data, filename)
+        return cls(FFmpegPCMAudio(filename, **cls._FFMPEG_OPTIONS), data, filename)

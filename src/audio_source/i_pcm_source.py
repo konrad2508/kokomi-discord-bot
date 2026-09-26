@@ -18,5 +18,5 @@ class IPCMSource(ABC, CountablePCMVolumeTransformer):
 
     @classmethod
     @abstractmethod
-    async def from_search(cls: Type[IPCMSource], url: str, cookies: str = '') -> IPCMSource:
+    async def from_search(cls: Type[IPCMSource], url: str) -> IPCMSource:
         '''Returns an instance representing a song identified by the search argument, being either a url or a query.'''

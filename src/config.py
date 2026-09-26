@@ -17,8 +17,6 @@ class Config:
         self.prefix = os.environ.get('BOT_PREFIX', '')
         self.owner = int(os.environ.get('BOT_OWNER', '0'))
 
-        self.youtube_cookies_base64 = os.environ.get('YOUTUBE_COOKIES_BASE64', '')
-
         self.tenor_base_url = os.environ.get('TENOR_BASE_URL', '')
         self.tenor_token = os.environ.get('TENOR_TOKEN', '')
         self.tenor_limit = os.environ.get('TENOR_LIMIT', '')
