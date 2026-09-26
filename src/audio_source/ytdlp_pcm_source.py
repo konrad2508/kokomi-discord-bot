@@ -24,13 +24,14 @@ class YtdlpPCMSource(IPCMSource):
         'ignoreerrors': False,
         'logtostderr': False,
         'quiet': False,
+        'verbose': True,
         'no_warnings': True,
         'default_search': 'auto',
-        'extractor_args': {
-            'youtube': {
-                'player_client': ['web', 'mweb', 'android']
-            }
-        }
+        # 'extractor_args': {
+        #     'youtube': {
+        #         'player_client': ['mweb']
+        #     }
+        # }
     }
 
     _FFMPEG_OPTIONS = {

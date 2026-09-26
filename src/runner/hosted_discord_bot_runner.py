@@ -1,5 +1,7 @@
+import atexit
 import http.server
 import logging
+import subprocess
 import time
 import threading
 import urllib
@@ -43,7 +45,20 @@ class HostedDiscordBotRunner(StandardDiscordBotRunner):
                 except Exception as e:
                     logging.error(f'error pinging {self.cfg.webserver_url}: {e}')
 
+        def start_pot():
+            logging.info('starting pot provider')
 
+            sp = subprocess.Popen(
+                ['node', '../pot/server/build/main.js', '--port', '4416'],
+                # stdout=subprocess.DEVNULL,
+                # stderr=subprocess.DEVNULL
+            )
+            time.sleep(3)
+
+            atexit.register(sp.terminate)
+
+
+        start_pot()
         threading.Thread(target=start_server, daemon=True).start()
         threading.Thread(target=start_ping, daemon=True).start()
 

@@ -7,3 +7,4 @@ pymongo==4.0.2
 dnspython==2.2.1
 youtube-search-python==1.6.2
 spotipy==2.23.0
+bgutil-ytdlp-pot-provider
