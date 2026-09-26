@@ -27,11 +27,16 @@ class YtdlpPCMSource(IPCMSource):
         'verbose': True,
         'no_warnings': True,
         'default_search': 'auto',
-        # 'extractor_args': {
-        #     'youtube': {
-        #         'player_client': ['mweb']
-        #     }
-        # }
+        'force_ipv4': True,
+        'extractor_args': {
+            'youtube': {
+                'player_client': ['mweb']
+            }
+        },
+        'js_runtimes': {
+            'node': { }
+        },
+        'remote_components': ['ejs:github']
     }
 
     _FFMPEG_OPTIONS = {
@@ -88,4 +93,9 @@ class YtdlpPCMSource(IPCMSource):
 
         filename = data['url']
 
-        return cls(FFmpegPCMAudio(filename, **cls._FFMPEG_OPTIONS), data, filename)
+        ffmpeg_options = cls._FFMPEG_OPTIONS
+        headers = ''.join(f'{k}: {v}\r\n' for k, v in data.get('http_headers', {}).items())
+        user_agent = data.get('http_headers', {}).get('User-Agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)')
+        ffmpeg_options['before_options'] = f'{ffmpeg_options['before_options']} -headers "{headers}" -user_agent "{user_agent}"'
+
+        return cls(FFmpegPCMAudio(filename, **ffmpeg_options), data, filename)
