@@ -26,7 +26,6 @@ class YtdlpPCMSource(IPCMSource):
         'quiet': False,
         'no_warnings': True,
         'default_search': 'auto',
-        'source_address': '::',
         'extractor_args': {
             'youtube': {
                 'player_client': ['web', 'mweb', 'android']
