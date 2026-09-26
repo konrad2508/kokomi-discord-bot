@@ -21,6 +21,10 @@ class SongService:
         if re.match(r'^.*youtube\.com\/playlist', source) is not None:
             raise SongIsPlaylist
 
+        if re.match(r'^.*youtube\.com\/watch\?v=', source):
+            v_id = source.split('watch?v=')[1]
+            source = f'https://www.youtube.com/embed/{v_id}'
+
         song_source = YtdlpPCMSource
 
         song = await Song.from_search(song_source, source)

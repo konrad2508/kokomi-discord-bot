@@ -22,7 +22,8 @@ class YtdlpPCMSource(IPCMSource):
         'nocheckcertificate': True,
         'ignoreerrors': False,
         'logtostderr': False,
-        'quiet': True,
+        'quiet': False,
+        'verbose': True,
         'no_warnings': True,
         'default_search': 'auto',
     }
