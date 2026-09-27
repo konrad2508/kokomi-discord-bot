@@ -1,6 +1,7 @@
 DOCKER=sudo docker
 DOCKERBUILD=$(DOCKER) build
-DOCKERRUN=$(DOCKER) run --env-file .env
+ENVFILE=$(if $(wildcard .env),--env-file .env,)
+DOCKERRUN=$(DOCKER) run $(ENVFILE)
 IMAGETAG=kokomi-discord-bot
 
 program: run
