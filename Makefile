@@ -1,6 +1,6 @@
 DOCKER=sudo docker
 DOCKERBUILD=$(DOCKER) build
-DOCKERRUN=$(DOCKER) run
+DOCKERRUN=$(DOCKER) run --env-file .env
 IMAGETAG=kokomi-discord-bot
 
 program: run
@@ -12,4 +12,4 @@ run: build
 	$(DOCKERRUN) $(IMAGETAG)
 
 unittest: build
-	$(DOCKERRUN) $(IMAGETAG) python -m unittest discover -s ../test
+	$(DOCKERRUN) $(IMAGETAG) uv run -m unittest discover -s test

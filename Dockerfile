@@ -1,30 +1,20 @@
-# Use archlinux base image
-FROM python:3.12-alpine
+FROM python:3.13-alpine
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
-# Keeps Python from generating .pyc files in the container
+ENV UV_NO_DEV=1
 ENV PYTHONDONTWRITEBYTECODE=1
-
-# Turns off buffering for easier container logging
 ENV PYTHONUNBUFFERED=1
+ENV PYTHONPATH="/app/src"
 
-# Install packages
-RUN apk add --no-cache ffmpeg imagemagick gcc musl-dev opus deno
-
-# Install pip requirements
-COPY requirements.txt .
-RUN pip install --no-cache-dir --upgrade pip
-RUN pip install --no-cache-dir --break-system-packages -r requirements.txt
-
-# Create app folder
 WORKDIR /app
-
-# Create app user
 RUN adduser -D -u 1000 appuser && chown -R appuser:appuser /app
 
-# Copy application
-COPY . /app
+RUN apk add --no-cache git ffmpeg imagemagick opus deno gcc musl-dev 
 
-# Start the application
+COPY pyproject.toml uv.lock .
+RUN uv sync --upgrade-package yt-dlp
+
+COPY src /app/src
+COPY test /app/test
 USER appuser
-WORKDIR /app/src
-CMD ["python", "app.py"]
+CMD ["uv", "run", "src/app.py"]

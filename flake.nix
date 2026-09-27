@@ -15,7 +15,22 @@
           packages = with pkgs; [
             gnumake
             python3
+            uv
           ];
+
+          env = {
+            UV_CACHE_DIR = ".venv-cache";
+          };
+
+          shellHook = ''
+            if [ ! -d .venv ]; then
+              uv venv .venv
+            fi
+
+            source .venv/bin/activate
+
+            uv pip install -r requirements.txt
+          '';
         };
       };
     };

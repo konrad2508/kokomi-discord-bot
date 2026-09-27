@@ -1,0 +1,18 @@
+[project]
+name = "kokomi-discord-bot"
+version = "0.1.0"
+requires-python = ">=3.13"
+dependencies = [
+    "dnspython ~= 2.8.0",
+    "nextcord[voice] ~= 3.2.0",
+    "pillow ~= 12.3.0",
+    "pymongo ~= 4.18.2",
+    "pynacl",
+    "python-dotenv ~= 1.2.3",
+    "spotipy ~= 2.26.0",
+    "youtube-search-python ~= 1.6.2",
+    "yt-dlp",
+]
+
+[tool.uv.sources]
+yt-dlp = { git = "https://github.com/yt-dlp/yt-dlp.git", branch = "master" }
