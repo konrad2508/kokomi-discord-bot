@@ -14,7 +14,6 @@
         devShells.default = pkgs.mkShell {
           packages = with pkgs; [
             gnumake
-            python3
             uv
           ];
 
@@ -23,13 +22,7 @@
           };
 
           shellHook = ''
-            if [ ! -d .venv ]; then
-              uv venv .venv
-            fi
-
-            source .venv/bin/activate
-
-            uv pip install -r requirements.txt
+            uv sync
           '';
         };
       };
